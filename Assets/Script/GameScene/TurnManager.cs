@@ -138,7 +138,14 @@ public class TurnManager : MonoBehaviour
         if (players.Count == 0) return null;
         return players[currentPlayerIndex];
     }
-
+    /// <summary>
+    /// 今のターンの PlayerData を返す
+    /// </summary>
+    public PlayerData GetCurrentPlayerData()
+    {
+        if (turnManager_players.Count == 0) return null;
+        return turnManager_players[currentPlayerIndex];
+    }
 
     /// <summary>
     /// プレイヤーを全削除し、currentPlayerIndex をリセットする。

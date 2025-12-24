@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +10,13 @@ public class SelectActionViewUI : MonoBehaviour
     public Button buttonItemUI;
     [Header("マップボタン")]
     public Button buttonMapUI;
-    [Header("戻るボタン")]
+    [Header("キャンセルボタン")]
     public Button buttonBackUI;
+
+    public TextMeshProUGUI rouletteText;
+    public TextMeshProUGUI itemText;
+    public TextMeshProUGUI mapText;
+    public TextMeshProUGUI backText;
 
     public GameManager gameManager;
 
@@ -21,6 +27,10 @@ public class SelectActionViewUI : MonoBehaviour
         buttonItemUI.onClick.AddListener(() => gameManager.OnActionSelected(eActionType.Item));
         buttonMapUI.onClick.AddListener(() => gameManager.OnActionSelected(eActionType.Map));
         buttonBackUI.onClick.AddListener(() => gameManager.OnBackButton(gameManager.GetActionType()));
+    }
+    private void Update()
+    {
+        
     }
 
 

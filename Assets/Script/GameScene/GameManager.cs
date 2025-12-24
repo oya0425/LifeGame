@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum eActionType { Roulette, Item, Map }
 
@@ -47,6 +48,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private MODE eMode=MODE.NONE;
     public MODE CurrentMode => eMode;
 
+    PlayerData playerData;
+
+
     // --- 順番決めの変数 ---
 
     // 順番決定後に割り振られる内部番号の開始値
@@ -64,6 +68,8 @@ public class GameManager : MonoBehaviour
 
 
     // --- 選択画面の変数 ---
+    [SerializeField] private PlayerStatusView playerStatusUI;
+
     [Header("選択画面の親")]
     public GameObject selectActionView;
     [Tooltip("選択画面のモード")] public eActionType actionType;
@@ -103,6 +109,8 @@ public class GameManager : MonoBehaviour
         diceView.SetActive(false);
         HideBackButton();
         HideSelectActionView();
+
+        playerStatusUI.Hide();
         // --------------
 
 
@@ -396,6 +404,11 @@ public class GameManager : MonoBehaviour
 
         // ターン開始
         TurnManager.instance.StartTurn();
+        playerData = TurnManager.instance.GetCurrentPlayerData();
+        playerStatusUI.SetPlayer(playerData);
+
+        playerStatusUI.Show();
+
     }
 
     #endregion
@@ -649,8 +662,13 @@ public class GameManager : MonoBehaviour
     private IEnumerator OnEndTurnStart()
     {
         turnM.EndTurn();
-        yield return new WaitForSeconds(1.5f);
+        playerData = TurnManager.instance.GetCurrentPlayerData();
 
+        // UI 更新
+        playerStatusUI.SetPlayer(playerData);
+        playerStatusUI.Show();
+        yield return new WaitForSeconds(1.5f);
+        
         ChangeMode(MODE.SelectAction);
     }
 
@@ -675,6 +693,10 @@ public class GameManager : MonoBehaviour
                 diceView.SetActive(false);
                 waitingHideDice = false;
             }
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            SceneManager.LoadScene("TitleScene");
         }
     }
 
