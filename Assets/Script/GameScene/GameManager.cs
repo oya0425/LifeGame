@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum eActionType { Roulette, Item, Map }
 
@@ -13,6 +14,7 @@ public enum eActionType { Roulette, Item, Map }
 /// ・ゲーム開始制御
 /// ・DiceSpinner 結果受信
 /// </summary>
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -43,6 +45,9 @@ public class GameManager : MonoBehaviour
 
         [Tooltip("ターン終了処理（次のプレイヤーへ進む）")]
         EndTurn,
+
+        [Tooltip("全員ゴール後の結果表示フェーズ")]
+        Result,
     }
 
     [SerializeField] private MODE eMode=MODE.NONE;
@@ -94,6 +99,19 @@ public class GameManager : MonoBehaviour
 
     // --------------------------
 
+    // --- イベント処理の変数 ---
+    [Tooltip("イベントが終わったかどうか?")]
+    bool isEndEvent = false;
+
+    // --------------------------
+
+
+    // --- リザルト処理の変数 ---
+    [Tooltip("リザルト画面UI")]
+    [SerializeField] private ResultUI resultUI;
+    bool isResult = false;
+    // --------------------------
+
 
     #region Unity Lifecycle
 
@@ -111,6 +129,7 @@ public class GameManager : MonoBehaviour
         HideSelectActionView();
 
         playerStatusUI.Hide();
+        resultUI.Hide();
         // --------------
 
 
@@ -146,6 +165,8 @@ public class GameManager : MonoBehaviour
                 break;
             case MODE.EndTurn:
                 break;
+            case MODE.Result:
+                break;
         }
 
 
@@ -177,6 +198,11 @@ public class GameManager : MonoBehaviour
                 break;
             case MODE.EndTurn:
                 StartCoroutine(OnEndTurnStart());
+                break;
+            case MODE.Result:
+                isResult = true;
+                Debug.Log("Result通った");
+                OnResultStart();
                 break;
         }
         eMode = next;
@@ -563,6 +589,11 @@ public class GameManager : MonoBehaviour
         DiceSpinner.instance.OnSpinStart -= HideBackButton;
         isRegistered = false;
     }
+    private void OnSelectActionStart()
+    {
+        diceView.SetActive(false);
+    }
+
     #endregion
 
 
@@ -609,44 +640,73 @@ public class GameManager : MonoBehaviour
     #region　イベント処理
     private void OnEventStart()
     {
+        isEndEvent = false;
         OnHideDiceTimer();
-
         PlayerMover mover = currentMover;
         TileData tile=　mover.GetCurrentTile();
+        PlayerData playerData = TurnManager.instance.GetCurrentPlayerData();
         diceView.SetActive(false);
 
-        ProcessTileEvent(tile, mover);
+        ProcessTileEvent(tile, playerData);
     }
 
-    void ProcessTileEvent(TileData tile, PlayerMover mover)
+    void ProcessTileEvent(TileData tile, PlayerData playerData)
     {
+        TileMoneyCalculator calculator = new TileMoneyCalculator();
+        int delta = 0;
         switch (tile.tileType)
         {
             case TileData.eTileType.NORMAL:
+                delta = calculator.CalcMoneyDelta(tile);
+                playerData.money += delta;
+
                 tile.DebugLog();
+                OnTileEventFinished();
+
                 break;
             case TileData.eTileType.START:
                 tile.DebugLog();
                 break;
             case TileData.eTileType.EVENT:
+                TileEvent tileEvent = new TileEvent();
+                tileEvent.Execute(tile, OnTileEventFinished);
                 tile.DebugLog();
 
                 break;
             case TileData.eTileType.LUCKY:
+                TileLucky tileLucky=new TileLucky();
+                tileLucky.Execute(tile, OnTileEventFinished);
                 tile.DebugLog();
+
                 break;
             case TileData.eTileType.MINUS:
+                delta = calculator.CalcMoneyDelta(tile);
+                playerData.money -= delta;
+
                 tile.DebugLog();
+                OnTileEventFinished();
                 break;
             case TileData.eTileType.BRANCH:
                 tile.DebugLog();
                 break;
             case TileData.eTileType.GOAL:
+                //プレイヤーがゴールした
+                playerData.isGoal = true;
                 tile.DebugLog();
+                OnTileEventFinished();
+
                 break;
         }
-        // 今日は何もしないイベント
-        ChangeMode(MODE.EndTurn);
+
+
+    }
+    /// <summary>
+    /// EndTurnに遷移 </summary>
+    void OnTileEventFinished()
+    {
+        //プレイヤーのステータスUIを更新
+        playerStatusUI.SetPlayer(playerData);
+        isEndEvent = true;
 
     }
 
@@ -659,8 +719,25 @@ public class GameManager : MonoBehaviour
     }
 
     #region 次のターンの人に渡す
+
     private IEnumerator OnEndTurnStart()
     {
+        bool allGoal = true;
+        foreach (var player in TurnManager.instance.turnManager_players)
+        {
+            if (!player.isGoal)
+            {
+                allGoal = false;
+                break;
+            }
+        }
+        Debug.Log($"allGoal{allGoal}");
+        if (allGoal)
+        {
+            ChangeMode(MODE.Result);
+            yield break; // ← ここ超重要
+        }
+
         turnM.EndTurn();
         playerData = TurnManager.instance.GetCurrentPlayerData();
 
@@ -673,12 +750,25 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+    #region リザルト処理
 
-    private void OnSelectActionStart()
+    private void OnResultStart()
     {
-        diceView.SetActive(false);
+        playerStatusUI.Hide();
+        HideSelectActionView();
+        isEndEvent = false;
+
+        // プレイヤー一覧を取得
+        List<PlayerData> players =
+            new List<PlayerData>(TurnManager.instance.turnManager_players);
+
+        // お金の量で降順ソート
+        players.Sort((a, b) => b.money.CompareTo(a.money));
+
+        resultUI.Show(players);
     }
 
+    #endregion
 
     #endregion
 
@@ -694,12 +784,27 @@ public class GameManager : MonoBehaviour
                 waitingHideDice = false;
             }
         }
-        if (Input.GetKeyDown(KeyCode.O))
+
+        // --- イベントが終わったらマウスクリックするのを待つ ---
+        if (isEndEvent && eMode != MODE.Result)
         {
-            SceneManager.LoadScene("TitleScene");
+            if (Input.GetMouseButtonDown(0))
+            {
+                isEndEvent = false;
+                ChangeMode(MODE.EndTurn);
+                
+            }
+        }
+
+        if (isResult)
+        {
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                SceneManager.LoadScene("TitleScene");
+            }
+
         }
     }
-
 
 
 }

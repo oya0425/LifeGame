@@ -1,0 +1,18 @@
+using UnityEngine;
+
+public class TileMoneyCalculator
+{
+    const int minMoney = 100;
+
+    public int CalcMoneyDelta(TileData tile)
+    {
+        //ƒ}ƒX‚ÌÅ‘å”‚ğæ‚é
+        int maxTileCount = TileManager.instance.tiles.Count;
+        float progress = (float)tile.tileIndex / (maxTileCount - 1);
+
+        //delta‘Œ¸—Ê
+        int delta = Mathf.RoundToInt(minMoney * (1f + progress));
+        return delta;
+    }
+
+}

@@ -35,4 +35,7 @@ public class PlayerData : ScriptableObject
     [Header("--- F ---")]
     public Color playerColor;
 
+    [Tooltip("ƒS[ƒ‹‚µ‚½‚©‚Ç‚¤‚©H")]
+    public bool isGoal; 
+
 }

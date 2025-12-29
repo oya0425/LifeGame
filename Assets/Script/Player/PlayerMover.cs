@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -42,6 +40,7 @@ public class PlayerMover : MonoBehaviour
 
     [Tooltip("ゴールしたかどうか？")]
     [SerializeField,Header("ゴールしたか？")] bool isReachedGoal = false;
+
 
     TileData tile;
 
@@ -101,10 +100,12 @@ public class PlayerMover : MonoBehaviour
         // ===== マス移動 =====
         for (int i = 0; i < steps; i++)
         {
-            int nextTileIndex = currentTileIndex + 1;
+            int nextTileIndex = currentTileIndex+1;
             if (nextTileIndex >= tiles.Count)
             {
-                isReachedGoal = true; 
+                isReachedGoal = true;
+                PlayerData nowPlayerData = TurnManager.instance.GetCurrentPlayerData();
+                nowPlayerData.isGoal = isReachedGoal;
                 break;
             }
 

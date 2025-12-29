@@ -21,6 +21,8 @@ public class PlayerManager : MonoBehaviour
     [Header("スタート位置")]
     public Transform startTitle;
 
+
+
     [Header("タイル（マス）親")]
     public Transform tileParent;
 

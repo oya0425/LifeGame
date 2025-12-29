@@ -80,8 +80,9 @@ public class TitleManager : MonoBehaviour
     private void Start()
     {
         myBG = GetComponent<SpriteRenderer>();
+        playerCount = 0;
         playerColor.Clear();
-
+        playerObjects.Clear();
         SetTitle();   // タイトル状態で初期化
     }
 
@@ -130,8 +131,8 @@ public class TitleManager : MonoBehaviour
 
             // 人数選択 → ゲーム開始
             case MODE.SELECTPLAYER:
-                SceneManager.LoadScene("GameScene");
-                //SceneManager.LoadScene("DebugScene");
+                //SceneManager.LoadScene("GameScene");
+                SceneManager.LoadScene("DebugScene");
                 break;
         }
     }
