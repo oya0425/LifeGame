@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum eActionType { Roulette, Item, Map }
 
@@ -25,6 +24,9 @@ public class GameManager : MonoBehaviour
     public enum MODE
     {
         NONE,
+        [Tooltip("目標を決める")]
+        TargetGoalSetting,
+
         [Tooltip("順番決めフェーズ（ゲーム開始時のみ）")]
         SelectOrder,
 
@@ -54,6 +56,15 @@ public class GameManager : MonoBehaviour
     public MODE CurrentMode => eMode;
 
     PlayerData playerData;
+
+    // --- 目標決定の変数 ---
+    [SerializeField, Tooltip("目標のデータ所持")]
+    TargetGoalManager targetGoalManager;
+
+
+
+
+    // ----------------------
 
 
     // --- 順番決めの変数 ---
@@ -102,6 +113,9 @@ public class GameManager : MonoBehaviour
     // --- イベント処理の変数 ---
     [Tooltip("イベントが終わったかどうか?")]
     bool isEndEvent = false;
+    [SerializeField] 
+    EventUIController eventUIController;
+    TileEvent tileEvent;
 
     // --------------------------
 
@@ -130,6 +144,8 @@ public class GameManager : MonoBehaviour
 
         playerStatusUI.Hide();
         resultUI.Hide();
+
+        tileEvent = new TileEvent(eventUIController);
         // --------------
 
 
@@ -139,10 +155,18 @@ public class GameManager : MonoBehaviour
         RegisterDiceEvent();
 
         // 最初は順番決めモード
-        ChangeMode(MODE.SelectOrder);
+        ChangeMode(MODE.NONE);
+        StartCoroutine(StartGameFlow());
 
 
+    }
 
+    IEnumerator StartGameFlow()
+    {
+        // 初期化がすべて終わるのを待つ
+        yield return null;
+
+        ChangeMode(MODE.TargetGoalSetting);
     }
 
     [Tooltip("状態遷移")]
@@ -151,6 +175,8 @@ public class GameManager : MonoBehaviour
         if (eMode == next) return;
         switch (eMode)
         {
+            case MODE.TargetGoalSetting:
+                break;
             case MODE.SelectOrder:
                 break;
             case MODE.SelectAction:
@@ -172,6 +198,10 @@ public class GameManager : MonoBehaviour
 
         switch (next)
         {
+            case MODE.TargetGoalSetting:
+                OnTargetGoalStart();
+                break;
+
             case MODE.SelectOrder:
                 OnSelectOrderStart();
 
@@ -209,6 +239,23 @@ public class GameManager : MonoBehaviour
 
 
     }
+
+    #region 目標決定処理
+    private void OnTargetGoalStart()
+    {
+        targetGoalManager.OnFinished -= OnTargetGoalFinish;
+        targetGoalManager.OnFinished += OnTargetGoalFinish;
+        targetGoalManager.StartSetting();
+    }
+
+    private void OnTargetGoalFinish()
+    {
+        targetGoalManager.OnFinished-= OnTargetGoalFinish;
+        ChangeMode(MODE.SelectOrder);
+    }
+
+
+    #endregion
 
 
     void OnSelectOrderStart()
@@ -668,7 +715,7 @@ public class GameManager : MonoBehaviour
                 tile.DebugLog();
                 break;
             case TileData.eTileType.EVENT:
-                TileEvent tileEvent = new TileEvent();
+
                 tileEvent.Execute(tile, OnTileEventFinished);
                 tile.DebugLog();
 

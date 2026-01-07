@@ -27,7 +27,7 @@ public class ButtonHoverTextColor : MonoBehaviour,
     {
         targetText.color = hoverColor;
     }
-
+    
     /// <summary>
     /// ƒ}ƒEƒX‚ª—£‚ê‚½‚Æ‚«
     /// </summary>

@@ -10,7 +10,7 @@ public class PlayerData : ScriptableObject
 {
     /// <summary>プレイヤーの表示名。</summary>
     [Header("--- プレイヤーの名前 ---")]
-    public string  name;
+    public new string  name;
 
     /// <summary>現在の所持金。</summary>
     [Header("--- 所持金 ---")]
@@ -36,6 +36,11 @@ public class PlayerData : ScriptableObject
     public Color playerColor;
 
     [Tooltip("ゴールしたかどうか？")]
-    public bool isGoal; 
+    public bool isGoal;
 
+    [Tooltip("目標金額")]
+    public int targetMoney;
+
+    [Tooltip("選ばれた目標データ")]
+    public TargetGoalData targetGoal;
 }

@@ -10,11 +10,13 @@ public class PlayerStatusView : MonoBehaviour
     [Tooltip("playerの色")]
     [SerializeField] Image PlayerColor;
 
-    [Tooltip("お金数値")]
+    [Tooltip("お金")]
     [SerializeField] TextMeshProUGUI moneyValueText;
 
-    [Tooltip("お金単位")]
-    [SerializeField] TextMeshProUGUI moneyTani;
+    [Tooltip("目標金額")]
+    [SerializeField] TextMeshProUGUI moneyTargetText;
+
+
 
     [Tooltip("現在表示しているプレイヤーデータ")]
     PlayerData currentPlayerData;
@@ -33,6 +35,7 @@ public class PlayerStatusView : MonoBehaviour
 
         SetPlayerColor(currentPlayerData.playerColor);
         SetMoney(currentPlayerData.money);
+        SetTargetMoney(currentPlayerData.targetMoney);
     }
 
     [Tooltip("プレイヤーカラー反映")]
@@ -44,8 +47,15 @@ public class PlayerStatusView : MonoBehaviour
     [Tooltip("所持金反映")]
     void SetMoney(int money)
     {   
-        moneyValueText.text = money.ToString();
+        moneyValueText.text = MyUtility.FormatMoneyManEn(money);
     }
+
+    [Tooltip("所持金反映")]
+    void SetTargetMoney(int money)
+    {
+        moneyTargetText.text = MyUtility.FormatMoneyManEn(money);
+    }
+
 
     [Tooltip("UI表示ON")]
     public void Show()

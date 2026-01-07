@@ -131,8 +131,8 @@ public class TitleManager : MonoBehaviour
 
             // 人数選択 → ゲーム開始
             case MODE.SELECTPLAYER:
-                //SceneManager.LoadScene("GameScene");
-                SceneManager.LoadScene("DebugScene");
+                SceneManager.LoadScene("GameScene");
+                //SceneManager.LoadScene("DebugScene");
                 break;
         }
     }
