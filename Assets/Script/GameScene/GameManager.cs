@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum eActionType { Roulette, Item, Map }
 
@@ -68,6 +69,10 @@ public class GameManager : MonoBehaviour
 
 
     // --- 順番決めの変数 ---
+    [SerializeField, Header("再抽選などのテキスト")]
+    Text setumei;
+    [SerializeField, Header("順番決めの全体UI")]
+    OrderSelectUI orderSelectUI;
 
     // 順番決定後に割り振られる内部番号の開始値
     private int outnumber = 7;
@@ -117,13 +122,20 @@ public class GameManager : MonoBehaviour
     EventUIController eventUIController;
     TileEvent tileEvent;
 
+    [Tooltip("イベント終了時に出るテキスト")]
+    [SerializeField]EventTextManager eventTextManager;
+
     // --------------------------
 
 
     // --- リザルト処理の変数 ---
+    [SerializeField] ResultManager resultManager;
     [Tooltip("リザルト画面UI")]
     [SerializeField] private ResultUI resultUI;
     bool isResult = false;
+    [SerializeField] Button detailButton;
+
+    [SerializeField] ResultDetailManager resultDetailManager;
     // --------------------------
 
 
@@ -144,6 +156,10 @@ public class GameManager : MonoBehaviour
 
         playerStatusUI.Hide();
         resultUI.Hide();
+        orderSelectUI.Hide();
+        OnHideRankingFinished();
+        resultDetailManager.Hide();
+        eventTextManager.Hide();
 
         tileEvent = new TileEvent(eventUIController);
         // --------------
@@ -262,6 +278,13 @@ public class GameManager : MonoBehaviour
     {
         //ルーレットを表示
         diceView.SetActive(true);
+        DiceSpinner.instance.SetOrderSelectPosition();
+        //説明を表示
+        orderSelectUI.Show();
+        orderSelectUI.SetMessage(
+            $"ルーレットを回そう！:" +
+            $"{PlayerManager.instance.playerDataList[0].playerName}");
+
 
         // 順番決め開始
         // PlayerManager の準備完了を待って順番決め開始
@@ -321,18 +344,39 @@ public class GameManager : MonoBehaviour
 
         // TurnManager の登録情報を初期化
         TurnManager.instance.ClearPlayers();
-
-        // 全員の出目が揃い、かつ衝突解決が完了するまで待つ
-        yield return new WaitUntil(() =>
+        while (true)
         {
-            if (!AreAllNumbersFilled(dataList)) return false;
-
+            // 全員の出目が揃うのを待つ
+            yield return new WaitUntil(() =>
+                AreAllNumbersFilled(dataList)
+            );
+            // 出目かぶりをなくす
             ResolveNumberConflicts(dataList);
             RegisterDecidedPlayers(dataList, moverList);
             PrepareReRoll(dataList);
 
-            return AreAllOrdersDecided(dataList);
-        });
+            // 再抽選が必要ならここで終了（次は StartReRoll から再開）
+            if (playersToReRoll.Count > 0)
+            {
+                // UI更新
+                TurnUI.instance.UpdateAllResults();
+                orderSelectUI.SetMessage($"再抽選ルーレットを回そう！:{playersToReRoll[0].playerName}");
+
+                StartReRoll();
+                //再抽選時に全員がルーレットを回すまで待つ
+                yield return new WaitUntil(() =>
+                   AreReRollNumbersFilled(playersToReRoll)
+                );
+
+                continue;
+            }
+            //全員終了したら
+            break;
+        }
+        orderSelectUI.SetMessage("順番決定！");
+
+        yield return new WaitForSeconds(2f);
+        orderSelectUI.Hide();
 
         // 全員の順番が確定したらゲーム開始
         FinishOrderSelection();
@@ -357,6 +401,16 @@ public class GameManager : MonoBehaviour
     private bool AreAllNumbersFilled(List<PlayerData> dataList)
     {
         foreach (var data in dataList)
+            if (data.number == 0) return false;
+        return true;
+    }
+    /// <summary>
+    /// 再抽選時に全員が出目を振り終わったか確認
+    /// </summary>
+
+    private bool AreReRollNumbersFilled(List<PlayerData> reRollPlayers)
+    {
+        foreach (var data in reRollPlayers)
             if (data.number == 0) return false;
         return true;
     }
@@ -431,7 +485,7 @@ public class GameManager : MonoBehaviour
     private void PrepareReRoll(List<PlayerData> dataList)
     {
         playersToReRoll.Clear();
-        DiceSpinner.instance.rerollCount = 0;
+        rerollCount = 0;
 
         foreach (var data in dataList)
         {
@@ -443,8 +497,24 @@ public class GameManager : MonoBehaviour
         {
             TurnUI.instance.ShowCurrentRoulettePlayer(
                 playersToReRoll,
-                DiceSpinner.instance.rerollCount);
+                rerollCount);
         }
+    }
+    void StartReRoll()
+    {
+        // rerollCount をここでリセット
+        rerollCount = 0;
+
+        foreach (var data in playersToReRoll)
+        {
+            data.number = 0;
+            data.isOrderDecided = false;
+        }
+        
+
+        TurnUI.instance.ShowCurrentRoulettePlayer(
+            playersToReRoll,
+            rerollCount);
     }
 
     /// <summary>
@@ -455,33 +525,6 @@ public class GameManager : MonoBehaviour
         foreach (var data in dataList)
             if (!data.isOrderDecided) return false;
         return true;
-    }
-
-    #endregion
-
-    #region 順番決定後処理
-
-    /// <summary>
-    /// 順番決定完了後の後処理
-    /// </summary>
-    private void FinishOrderSelection()
-    {
-        TurnUI.instance.HideAllResultText();
-        playersToReRoll.Clear();
-        DiceSpinner.instance.rerollCount = -1;
-        DiceSpinner.instance.OnSpinEnd -= ProcessOrderDecision;
-        Debug.Log("全員登録完了。ゲーム開始");
-
-        // ルーレットを回す処理へ移行
-        ChangeMode(MODE.SelectAction);
-
-        // ターン開始
-        TurnManager.instance.StartTurn();
-        playerData = TurnManager.instance.GetCurrentPlayerData();
-        playerStatusUI.SetPlayer(playerData);
-
-        playerStatusUI.Show();
-
     }
 
     #endregion
@@ -503,7 +546,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 通常の順番決め処理
+    /// 通常の順番決め処理(ルーレットを回して結果を入れる)
     /// </summary>
     private void ProcessNormalOrder(int number)
     {
@@ -513,9 +556,18 @@ public class GameManager : MonoBehaviour
         player.isOrderDecided = true;
 
         TurnUI.instance.ShowCurrentRoulettePlayer(selectCount + 1);
-        TurnUI.instance.ShowResult(selectCount, number);
-
+        TurnUI.instance.ShowResult(player, number);
         selectCount++;
+        // 次のプレイヤー案内（まだ残っている場合のみ）
+        if (selectCount < PlayerManager.instance.playerDataList.Count)
+        {
+            var nextPlayer =
+                PlayerManager.instance.playerDataList[selectCount];
+            orderSelectUI.SetMessage(
+                $"ルーレットを回そう！: {nextPlayer.name}"
+            );
+        }
+
         DiceSpinner.instance.ResetNeedle();
     }
 
@@ -530,20 +582,55 @@ public class GameManager : MonoBehaviour
         var player = playersToReRoll[rerollCount];
 
         player.number = number;
-        player.isOrderDecided = true;
+        //player.isOrderDecided = true;
 
+        TurnUI.instance.ShowResult(player, number);
+        
+
+        
         TurnUI.instance.ShowCurrentRoulettePlayer(
             playersToReRoll,
             rerollCount + 1);
 
-        TurnUI.instance.ShowResult(rerollCount, number);
-
         rerollCount++;
+
         DiceSpinner.instance.ResetNeedle();
 
     }
 
     #endregion
+
+
+    #region 順番決定後処理
+
+    /// <summary>
+    /// 順番決定完了後の後処理
+    /// </summary>
+    private void FinishOrderSelection()
+    {
+        TurnUI.instance.HideAllResultText();
+        DiceSpinner.instance.SetDefaultPosition();
+
+        playersToReRoll.Clear();
+        rerollCount = -1;
+        DiceSpinner.instance.OnSpinEnd -= ProcessOrderDecision;
+
+        Debug.Log("全員登録完了。ゲーム開始");
+
+        // ルーレットを回す処理へ移行
+        ChangeMode(MODE.SelectAction);
+
+        // ターン開始
+        TurnManager.instance.StartTurn();
+        playerData = TurnManager.instance.GetCurrentPlayerData();
+        playerStatusUI.SetPlayer(playerData);
+
+        playerStatusUI.Show();
+
+    }
+
+    #endregion
+
 
     #endregion
 
@@ -560,6 +647,7 @@ public class GameManager : MonoBehaviour
         {
             case eActionType.Roulette:
                 ChangeMode(MODE.Dice);
+                DiceSpinner.instance.ResetNeedle();
                 ShowBackButtonUI();
                 break;
             case eActionType.Item:
@@ -576,6 +664,7 @@ public class GameManager : MonoBehaviour
         {
             case eActionType.Roulette:
                 ChangeMode(MODE.SelectAction);
+                DiceSpinner.instance.SetDefaultPosition();
                 HideBackButtonUI();
                 break;
             case eActionType.Item:
@@ -701,6 +790,9 @@ public class GameManager : MonoBehaviour
     {
         TileMoneyCalculator calculator = new TileMoneyCalculator();
         int delta = 0;
+
+        int currentMoney = playerData.money;
+
         switch (tile.tileType)
         {
             case TileData.eTileType.NORMAL:
@@ -708,7 +800,9 @@ public class GameManager : MonoBehaviour
                 playerData.money += delta;
 
                 tile.DebugLog();
-                OnTileEventFinished();
+                eventTextManager.Show();
+                OnEventText(currentMoney, playerData.money, delta);
+
 
                 break;
             case TileData.eTileType.START:
@@ -716,22 +810,28 @@ public class GameManager : MonoBehaviour
                 break;
             case TileData.eTileType.EVENT:
 
-                tileEvent.Execute(tile, OnTileEventFinished);
+                //tileEvent.Execute(tile, OnTileEventFinished);
+                tileEvent.Execute(tile, eventTextManager.Show);
+                OnEventText(currentMoney, playerData.money, delta);
+
+
                 tile.DebugLog();
 
                 break;
             case TileData.eTileType.LUCKY:
                 TileLucky tileLucky=new TileLucky();
-                tileLucky.Execute(tile, OnTileEventFinished);
+                tileLucky.Execute(tile, eventTextManager.Show);
+                OnEventText(currentMoney, playerData.money, delta);
                 tile.DebugLog();
 
                 break;
             case TileData.eTileType.MINUS:
                 delta = calculator.CalcMoneyDelta(tile);
                 playerData.money -= delta;
+                eventTextManager.Show();
+                OnEventText(currentMoney,playerData.money,delta);
 
                 tile.DebugLog();
-                OnTileEventFinished();
                 break;
             case TileData.eTileType.BRANCH:
                 tile.DebugLog();
@@ -747,13 +847,47 @@ public class GameManager : MonoBehaviour
 
 
     }
+
+    /// <summary>
+    /// お金の増減のテキスト表示 </summary>
+    void OnEventText(int currentMoney,int newMoney,int delta)
+    {
+        eventTextManager.OnClicked -= OnEndEventText;
+        eventTextManager.OnClicked += OnEndEventText;
+        if (currentMoney < newMoney)
+        {
+            eventTextManager.SetMessageText($"{MyUtility.FormatMoneyManEn(delta)}もらった!\n"
+                                                + "<align=right>クリックで次へ</align>");
+            playerStatusUI.ChangeSetMoney(playerData.money);
+
+        }
+        else
+        {
+            eventTextManager.SetMessageText($"{MyUtility.FormatMoneyManEn(delta)}失った...\n"
+                                                + "<align=right>クリックで次へ</align>");
+            playerStatusUI.ChangeSetMoney(playerData.money);
+
+        }
+
+    }
+
+    void OnEndEventText()
+    {
+        eventTextManager.OnClicked -= OnEndEventText;
+        eventTextManager.Hide();
+        OnTileEventFinished();
+
+    }
+
     /// <summary>
     /// EndTurnに遷移 </summary>
     void OnTileEventFinished()
     {
+
         //プレイヤーのステータスUIを更新
-        playerStatusUI.SetPlayer(playerData);
-        isEndEvent = true;
+        //playerStatusUI.SetPlayer(playerData);
+
+        ChangeMode(MODE.EndTurn);
 
     }
 
@@ -805,16 +939,57 @@ public class GameManager : MonoBehaviour
         HideSelectActionView();
         isEndEvent = false;
 
+        resultUI.OnRankingAnimationFinished += OnShowRankingFinished;
+
         // プレイヤー一覧を取得
         List<PlayerData> players =
             new List<PlayerData>(TurnManager.instance.turnManager_players);
+        resultManager.CreateResultEntryList(players);
+        resultUI.ShowRanking(
+        resultManager.GetResultEntryList()
+          );
+        resultUI.Show();
 
-        // お金の量で降順ソート
-        players.Sort((a, b) => b.money.CompareTo(a.money));
+        //// お金の量で降順ソート
+        //players.Sort((a, b) => b.money.CompareTo(a.money));
 
-        resultUI.Show(players);
+        //resultUI.Show(players);
+    }
+    /// <summary>
+    /// 詳細ボタン 
+    /// </summary>
+    void OnShowRankingFinished()
+    {
+        detailButton.gameObject.SetActive(true);
+    }
+    void OnHideRankingFinished()
+    {
+        detailButton.gameObject.SetActive(false);
     }
 
+    public void OnClickDetailButton()
+    {
+        detailButton.gameObject.SetActive(false);
+
+        resultUI.Hide();
+
+        // 詳細表示へ
+        resultDetailManager.Show(
+            PlayerManager.instance.playerDataList
+        );
+    }
+    /// <summary>
+    /// タイトルに戻るボタン  
+    /// </summary>
+    public void OnClickBackToTitle()
+    {
+        // リザルト系UIを全部閉じる
+        //resultDetailManager.Hide();
+        //resultUI.Hide();
+
+        // タイトルへ
+        SceneManager.LoadScene("TitleScene");
+    }
     #endregion
 
     #endregion
@@ -833,15 +1008,15 @@ public class GameManager : MonoBehaviour
         }
 
         // --- イベントが終わったらマウスクリックするのを待つ ---
-        if (isEndEvent && eMode != MODE.Result)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                isEndEvent = false;
-                ChangeMode(MODE.EndTurn);
+        //if (isEndEvent && eMode != MODE.Result)
+        //{
+        //    if (Input.GetMouseButtonDown(0))
+        //    {
+        //        isEndEvent = false;
+        //        ChangeMode(MODE.EndTurn);
                 
-            }
-        }
+        //    }
+        //}
 
         if (isResult)
         {

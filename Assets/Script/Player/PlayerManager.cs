@@ -93,7 +93,7 @@ public class PlayerManager : MonoBehaviour
         PlayerData template = allPlayerTemplates[0];
         PlayerData newData = ScriptableObject.CreateInstance<PlayerData>();
 
-        newData.name = "Player_" + (index + 1);
+        newData.playerName = "Player_" + (index + 1);
         newData.money = template.money;
         newData.positionIndex = template.positionIndex;
         newData.playerPrefab = template.playerPrefab;
@@ -114,7 +114,7 @@ public class PlayerManager : MonoBehaviour
             Quaternion.identity
         );
 
-        obj.name = data.name;
+        obj.name = data.playerName;
 
         // êFïœçX
         obj.transform.Find("Sphere").GetComponent<MeshRenderer>().material.color = data.playerColor;

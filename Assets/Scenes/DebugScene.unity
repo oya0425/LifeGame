@@ -292,6 +292,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   eMode: 0
+  targetGoalManager: {fileID: 0}
+  setumei: {fileID: 0}
+  orderSelectUI: {fileID: 0}
   playersToReRoll: []
   selectCount: 0
   rerollCount: 0
@@ -301,7 +304,12 @@ MonoBehaviour:
   backButton: {fileID: 100293652}
   diceView: {fileID: 788286084}
   turnM: {fileID: 2049422184}
+  eventUIController: {fileID: 0}
+  eventTextManager: {fileID: 0}
+  resultManager: {fileID: 0}
   resultUI: {fileID: 172370740}
+  detailButton: {fileID: 0}
+  resultDetailManager: {fileID: 0}
 --- !u!4 &86392549
 Transform:
   m_ObjectHideFlags: 0
@@ -2017,7 +2025,7 @@ MonoBehaviour:
   BackGround: {fileID: 847935197}
   PlayerColor: {fileID: 1440659428}
   moneyValueText: {fileID: 1108102373}
-  moneyTani: {fileID: 413919567}
+  moneyTargetText: {fileID: 0}
 --- !u!1 &879193623
 GameObject:
   m_ObjectHideFlags: 0

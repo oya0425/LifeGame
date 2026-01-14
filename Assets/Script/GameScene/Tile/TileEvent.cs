@@ -15,6 +15,8 @@ public class TileEvent
 
     EventUIController eventUI;
 
+    int moneyDelta;
+
     public TileEvent(EventUIController ui)
     {
         this.eventUI = ui;

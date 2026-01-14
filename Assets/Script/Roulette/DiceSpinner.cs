@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 
 public class DiceSpinner : MonoBehaviour
 {
@@ -11,6 +12,14 @@ public class DiceSpinner : MonoBehaviour
     /// <summary>ルーレット結果（1〜6）</summary>
     [Header("結果保存用")]
     [SerializeField] public int result = 1;
+
+    [SerializeField,Header("初期位置")]
+    RectTransform selfRect;
+
+    [SerializeField,Header("デフォルト位置")]
+    RectTransform defaultPos;
+    [SerializeField,Header("順番決め中の位置")]
+    RectTransform orderSelectPos;
 
     /// <summary>針の初期角度</summary>
     private Quaternion initialRotation;
@@ -28,10 +37,6 @@ public class DiceSpinner : MonoBehaviour
     /// </summary>
     [SerializeField] public int selectCount = 0;
 
-    /// <summary>
-    /// 再抽選時に何番目のプレイヤーを再抽選しているか
-    /// </summary>    
-    public int rerollCount = 0;
 
     private void Awake()
     {
@@ -114,5 +119,18 @@ public class DiceSpinner : MonoBehaviour
         needle.rotation = initialRotation;
         isSpinning = false;
         result = 1;
+    }
+
+    /// <summary>
+    /// 元の位置に戻す 
+    /// </summary>
+    public void SetDefaultPosition()
+    {
+        selfRect.anchoredPosition = defaultPos.anchoredPosition;
+    }
+
+    public void SetOrderSelectPosition()
+    {
+        selfRect.anchoredPosition = orderSelectPos.anchoredPosition;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
@@ -47,7 +48,7 @@ public class TitleManager : MonoBehaviour
     public const int PLAYERMAX = 4;
     public const int PLAYERMIN = 1;
 
-    Text txtplayerName; // Player1 などのテキスト
+    TextMeshProUGUI txtplayerName; // Player1 などのテキスト
 
 
     // ------------------------------
@@ -178,7 +179,7 @@ public class TitleManager : MonoBehaviour
         playerCount++;
 
         // Player1/Player2 などの表示
-        Text txt = obj.GetComponentInChildren<Text>();
+        TextMeshProUGUI txt = obj.GetComponentInChildren<TextMeshProUGUI>();
         txt.text = "Player" + playerCount;
 
         // プレイヤーカラーを枠に適用

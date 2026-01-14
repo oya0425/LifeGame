@@ -172,7 +172,7 @@ public class TurnUI : MonoBehaviour
         }
 
         var player = playerList[selectCount];
-        setumei.text = $"ルーレットを回せるのは: {player.name}";
+        setumei.text = $"ルーレットを回せるのは: {player.playerName}";
     }
 
     /// <summary>
@@ -188,24 +188,37 @@ public class TurnUI : MonoBehaviour
         }
 
         var player = playersToReRoll[rerollIndex];
-        setumei.text = $"ルーレットを回せるのは: {player.name}";
+        setumei.text = $"ルーレットを回せるのは: {player.playerName}";
     }
 
     /// <summary>
     /// プレイヤーのルーレット結果（数字 or 完了）を表示する。
     /// </summary>
-    public void ShowResult(int playerIndex, int num)
+    //public void ShowResult(int playerIndex, int num)
+    //{
+    //    var obj = playerObjects[playerIndex];
+    //    Text txt = obj.transform.Find("number").GetComponent<Text>();
+    //    txt.gameObject.SetActive(true);
+
+    //    var player = PlayerManager.instance.playerDataList[playerIndex];
+
+    //    bool isAlreadyAdded = TurnManager.instance.turnManager_players.Contains(player);
+    //    txt.text = isAlreadyAdded ? "[完了]" : num.ToString();
+    //}
+    public void ShowResult(PlayerData player, int num)
     {
-        var obj = playerObjects[playerIndex];
+        int index = PlayerManager.instance.playerDataList.IndexOf(player);
+        if (index < 0) return;
+
+        var obj = playerObjects[index];
         Text txt = obj.transform.Find("number").GetComponent<Text>();
         txt.gameObject.SetActive(true);
 
-        var player = PlayerManager.instance.playerDataList[playerIndex];
+        bool isAlreadyAdded =
+            TurnManager.instance.turnManager_players.Contains(player);
 
-        bool isAlreadyAdded = TurnManager.instance.turnManager_players.Contains(player);
         txt.text = isAlreadyAdded ? "[完了]" : num.ToString();
     }
-
 
 
     /// <summary>

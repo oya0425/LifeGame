@@ -2,6 +2,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 public class PlayerStatusView : MonoBehaviour
 {
     [Tooltip("”–ˆÃ‚¢”wŒi")]
@@ -16,7 +17,8 @@ public class PlayerStatusView : MonoBehaviour
     [Tooltip("–Ú•W‹àŠz")]
     [SerializeField] TextMeshProUGUI moneyTargetText;
 
-
+    int displayedMoney;
+    Coroutine moneyAnimCoroutine;
 
     [Tooltip("Œ»Ý•\Ž¦‚µ‚Ä‚¢‚éƒvƒŒƒCƒ„[ƒf[ƒ^")]
     PlayerData currentPlayerData;
@@ -32,7 +34,7 @@ public class PlayerStatusView : MonoBehaviour
     void RefreshView()
     {
         if (currentPlayerData == null) return;
-
+        displayedMoney = currentPlayerData.money;
         SetPlayerColor(currentPlayerData.playerColor);
         SetMoney(currentPlayerData.money);
         SetTargetMoney(currentPlayerData.targetMoney);
@@ -46,11 +48,38 @@ public class PlayerStatusView : MonoBehaviour
 
     [Tooltip("ŠŽ‹à”½‰f")]
     void SetMoney(int money)
-    {   
+    {
         moneyValueText.text = MyUtility.FormatMoneyManEn(money);
     }
+    public void ChangeSetMoney(int money)
+    {
+        if (!gameObject.activeInHierarchy)
+        {
+            displayedMoney = money;
+            moneyValueText.text = MyUtility.FormatMoneyManEn(money);
+            return;
+        }
+        if (moneyAnimCoroutine != null)
+        {
+            StopCoroutine(moneyAnimCoroutine);
+        }
 
-    [Tooltip("ŠŽ‹à”½‰f")]
+        moneyAnimCoroutine = StartCoroutine(
+            MyUtility.AnimateMoney(
+                displayedMoney,
+                money,
+                0.8f,
+                value =>
+                {
+                    displayedMoney = value;
+                    moneyValueText.text = MyUtility.FormatMoneyManEn(value);
+                }
+            )
+        );
+    }
+
+
+    [Tooltip("–Ú•W‹àŠz”½‰f")]
     void SetTargetMoney(int money)
     {
         moneyTargetText.text = MyUtility.FormatMoneyManEn(money);

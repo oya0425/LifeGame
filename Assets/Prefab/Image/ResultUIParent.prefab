@@ -186,8 +186,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c01d1598301e601458b0447ce9391bd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultUI
-  root: {fileID: 6710460999210181987}
-  resultText: {fileID: 5864754353394043557}
+  window: {fileID: 0}
+  window_ins: {fileID: 0}
+  Rank1stPrefab: {fileID: 0}
+  Rank2ndPrefab: {fileID: 0}
+  RankOtherPrefab: {fileID: 0}
+  rankStartPosList: []
+  rankTargetPosList: []
 --- !u!1 &9007038464345586470
 GameObject:
   m_ObjectHideFlags: 0

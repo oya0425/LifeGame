@@ -64,7 +64,7 @@ public class TargetGoalManager : MonoBehaviour
             }
             //UI表示
             targetUIController.SetMessage(
-                $"{playerData.name}は、目標を選択してください。");
+                $"{playerData.playerName}は、目標を選択してください。");
 
             targetUIController.SetChoices(
             new string[]
@@ -110,12 +110,12 @@ public class TargetGoalManager : MonoBehaviour
 
             // --- 結果メッセージ表示 ---
             targetUIController.SetMessage(
-                $"({selected.title})\n{playerData.name} の目標金額は {moneyText} です。\n" +
+                $"({selected.title})\n{playerData.playerName} の目標金額は {moneyText} です。\n" +
                 "<align=right>クリックで次へ</align>"
             );
 
 
-            playerData.targetGoal = selected;
+            playerData.targetGoalData = selected;
             playerData.targetMoney = targetMoney;
 
             // クリック待ち
