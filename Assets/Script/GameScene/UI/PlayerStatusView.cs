@@ -53,17 +53,20 @@ public class PlayerStatusView : MonoBehaviour
     }
     public void ChangeSetMoney(int money)
     {
+        // 非表示中は即時反映のみ（アニメしない）
         if (!gameObject.activeInHierarchy)
         {
+            StopMoneyAnimationIfNeeded();
+
             displayedMoney = money;
             moneyValueText.text = MyUtility.FormatMoneyManEn(money);
             return;
         }
-        if (moneyAnimCoroutine != null)
-        {
-            StopCoroutine(moneyAnimCoroutine);
-        }
 
+        // 既存アニメ停止
+        StopMoneyAnimationIfNeeded();
+
+        // 新しいアニメ開始
         moneyAnimCoroutine = StartCoroutine(
             MyUtility.AnimateMoney(
                 displayedMoney,
@@ -78,6 +81,14 @@ public class PlayerStatusView : MonoBehaviour
         );
     }
 
+    private void StopMoneyAnimationIfNeeded()
+    {
+        if (moneyAnimCoroutine != null)
+        {
+            StopCoroutine(moneyAnimCoroutine);
+            moneyAnimCoroutine = null;
+        }
+    }
 
     [Tooltip("目標金額反映")]
     void SetTargetMoney(int money)

@@ -7,7 +7,7 @@ public class TileEvent
     bool isWaiting;
 
     int textIndex;
-    Event currentEvent;
+     EventData currentEvent;
 
     bool isChoosing;
 
@@ -32,7 +32,7 @@ public class TileEvent
     public void Execute(TileData tile, System.Action onFinished)
     {
         this.onFinished = onFinished;
-        currentEvent = EventDatabase.GetRandomEvent();
+        currentEvent = EventDatabase.instance.GetRandomEvent();
 
         textIndex = 0;
 
@@ -41,7 +41,9 @@ public class TileEvent
         isWaiting = false;
 
         Debug.Log($"EVENTイベントマス発生 index{tile.tileIndex}");
-
+        eventUI.SetBackGround(currentEvent.backGround);
+        eventUI.SetMainImage(currentEvent.mainImg);
+        eventUI.SetEventNameText(currentEvent.eventName);
         eventUI.ShowWindow();
         eventUI.HideChoices();
         eventUI.SetEventText(currentEvent.texts[textIndex]);
@@ -94,6 +96,8 @@ public class TileEvent
         else
         {
             ShowChoices();
+            eventUI.SetresultAImage(currentEvent.resultAImage);
+            eventUI.SetresultBImage(currentEvent.resultBImage);
         }
     }
 
@@ -122,10 +126,11 @@ public class TileEvent
     void OnChoiceASelected()
     {
         if (!isChoosing) return;
+        moneyDelta = currentEvent.GetChoiceAMoney();
 
         eventUI.HideChoices();
         eventUI.SetEventText(currentEvent.resultAText);
-
+        eventUI.SetMainImage(currentEvent.resultAImage);
         isChoosing = false;
         isShowingResult = true;
     }
@@ -133,9 +138,11 @@ public class TileEvent
     void OnChoiceBSelected()
     {
         if (!isChoosing) return;
+        moneyDelta = currentEvent.GetChoiceBMoney();
 
         eventUI.HideChoices();
         eventUI.SetEventText(currentEvent.resultBText);
+        eventUI.SetMainImage(currentEvent.resultBImage);
 
         isChoosing = false;
         isShowingResult = true;
@@ -148,5 +155,10 @@ public class TileEvent
     {
         eventUI.HideAll();
         onFinished?.Invoke();
+    }
+
+    public int GetMoneyDelta()
+    {
+        return moneyDelta;
     }
 }

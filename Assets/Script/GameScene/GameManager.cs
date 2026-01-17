@@ -122,6 +122,8 @@ public class GameManager : MonoBehaviour
     EventUIController eventUIController;
     TileEvent tileEvent;
 
+    int currentMoney;
+
     [Tooltip("イベント終了時に出るテキスト")]
     [SerializeField]EventTextManager eventTextManager;
 
@@ -162,6 +164,8 @@ public class GameManager : MonoBehaviour
         eventTextManager.Hide();
 
         tileEvent = new TileEvent(eventUIController);
+
+        currentMoney = 0;
         // --------------
 
 
@@ -791,7 +795,7 @@ public class GameManager : MonoBehaviour
         TileMoneyCalculator calculator = new TileMoneyCalculator();
         int delta = 0;
 
-        int currentMoney = playerData.money;
+        currentMoney = playerData.money;
 
         switch (tile.tileType)
         {
@@ -800,7 +804,6 @@ public class GameManager : MonoBehaviour
                 playerData.money += delta;
 
                 tile.DebugLog();
-                eventTextManager.Show();
                 OnEventText(currentMoney, playerData.money, delta);
 
 
@@ -811,24 +814,21 @@ public class GameManager : MonoBehaviour
             case TileData.eTileType.EVENT:
 
                 //tileEvent.Execute(tile, OnTileEventFinished);
-                tileEvent.Execute(tile, eventTextManager.Show);
-                OnEventText(currentMoney, playerData.money, delta);
-
+                tileEvent.Execute(tile, OnEventFinished);
 
                 tile.DebugLog();
 
                 break;
             case TileData.eTileType.LUCKY:
                 TileLucky tileLucky=new TileLucky();
-                tileLucky.Execute(tile, eventTextManager.Show);
-                OnEventText(currentMoney, playerData.money, delta);
+                tileLucky.Execute(tile, OnEventFinished);
+
                 tile.DebugLog();
 
                 break;
             case TileData.eTileType.MINUS:
                 delta = calculator.CalcMoneyDelta(tile);
                 playerData.money -= delta;
-                eventTextManager.Show();
                 OnEventText(currentMoney,playerData.money,delta);
 
                 tile.DebugLog();
@@ -847,11 +847,19 @@ public class GameManager : MonoBehaviour
 
 
     }
+    void OnEventFinished()
+    {
+        int delta = tileEvent.GetMoneyDelta();
+        playerData.money += delta;
+
+        OnEventText(currentMoney, playerData.money, delta);
+    }
 
     /// <summary>
     /// お金の増減のテキスト表示 </summary>
     void OnEventText(int currentMoney,int newMoney,int delta)
     {
+        eventTextManager.Show();
         eventTextManager.OnClicked -= OnEndEventText;
         eventTextManager.OnClicked += OnEndEventText;
         if (currentMoney < newMoney)
@@ -918,14 +926,15 @@ public class GameManager : MonoBehaviour
             ChangeMode(MODE.Result);
             yield break; // ← ここ超重要
         }
+        yield return new WaitForSeconds(1.0f);
 
         turnM.EndTurn();
+
         playerData = TurnManager.instance.GetCurrentPlayerData();
 
         // UI 更新
         playerStatusUI.SetPlayer(playerData);
         playerStatusUI.Show();
-        yield return new WaitForSeconds(1.5f);
         
         ChangeMode(MODE.SelectAction);
     }
