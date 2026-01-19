@@ -22,6 +22,8 @@ public class TurnUI : MonoBehaviour
     public Text setumei;
 
 
+
+
     private void Awake()
     {
         instance = this;
@@ -53,13 +55,23 @@ public class TurnUI : MonoBehaviour
 
         SetupTurnUI();
 
+        //yield return new WaitUntil(() =>
+        //    TurnManager.instance != null &&
+        //    TurnManager.instance.players != null &&
+        //    TurnManager.instance.turnManager_players!=null&&
+        //    TurnManager.instance.players.Count ==
+        //    PlayerManager.instance.playerObjects.Count);
+
         yield return new WaitUntil(() =>
             TurnManager.instance != null &&
-            TurnManager.instance.players != null &&
-            TurnManager.instance.players.Count ==
-            PlayerManager.instance.playerObjects.Count);
+            TurnManager.instance.turnManager_players != null &&
+            TurnManager.instance.turnManager_players.Count > 0 &&
+            TurnManager.instance.turnManager_players.Count ==
+            PlayerManager.instance.playerObjects.Count
+        );
 
-        SortUIByTurnOrder();
+        Debug.Log("turnUI通った");
+        SortUIByTurnOrder();    // ← 念のため（順番通り生成なら不要）
     }
 
 
@@ -89,11 +101,13 @@ public class TurnUI : MonoBehaviour
         ShowCurrentRoulettePlayer(DiceSpinner.instance.selectCount);
     }
 
+
+
     /// <summary>
     /// TurnManager が決めた行動順に合わせて  
     /// UI の並び順（Hierarchy の並び）を変更する。
     /// </summary>
-    private void SortUIByTurnOrder()
+    public void SortUIByTurnOrder()
     {
         var turnList = TurnManager.instance.players;
 
@@ -104,8 +118,12 @@ public class TurnUI : MonoBehaviour
 
             GameObject uiObj = playerObjects[pIndex];
             uiObj.transform.SetSiblingIndex(UIPos);
+
         }
     }
+
+
+
 
     // --------------順番決め
 

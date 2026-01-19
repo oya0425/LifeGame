@@ -24,7 +24,7 @@ MonoBehaviour:
   choiceAMaxMoney: -30
   choiceBMinMoney: -10
   choiceBMaxMoney: 0
-  backGround: {fileID: 0}
-  mainImg: {fileID: 0}
-  resultAImage: {fileID: 0}
-  resultBImage: {fileID: 0}
+  backGround: {fileID: 21300000, guid: 3306c5972b077e74d87b33ed511c015a, type: 3}
+  mainImg: {fileID: 21300000, guid: eda5492b9165dd24f9911c929476d976, type: 3}
+  resultAImage: {fileID: 21300000, guid: c8d3fc4f83318f449b258405dc739adc, type: 3}
+  resultBImage: {fileID: 21300000, guid: 7abedccb26fa7c24fac9683b4e1bdf92, type: 3}

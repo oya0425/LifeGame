@@ -3437,7 +3437,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventDatabase
   events:
+  - {fileID: 11400000, guid: 53c12e1537d094349998f0df44ce7720, type: 2}
   - {fileID: 11400000, guid: 58ef0bafce73e9b4e8543a30b092230e, type: 2}
+  - {fileID: 11400000, guid: a44a0c49607cc6d44b28b4f32890cdf4, type: 2}
+  - {fileID: 11400000, guid: 025ac130372c02542b2c203684eac41c, type: 2}
+  - {fileID: 11400000, guid: 8ad413ce5fce6fc45b92a27b2db0f07a, type: 2}
+  - {fileID: 11400000, guid: 395a45692ca6d4e46a4635a54bc4b837, type: 2}
+  - {fileID: 11400000, guid: 74714a6a724f6084f88032db185b858f, type: 2}
+  - {fileID: 11400000, guid: f1fffd6d31b642842b3aca8c85aa7777, type: 2}
+  - {fileID: 11400000, guid: 161c8f74af8b18040887e80b53dfa982, type: 2}
+  - {fileID: 11400000, guid: 48e4e454ade76f842b1eebb74a497c73, type: 2}
+  - {fileID: 11400000, guid: d8279dc19532d6a4fae220fb93df8759, type: 2}
 --- !u!4 &655745726
 Transform:
   m_ObjectHideFlags: 0
@@ -7675,7 +7685,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -220}
+  m_AnchoredPosition: {x: 0, y: -180}
   m_SizeDelta: {x: 600, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1330422719

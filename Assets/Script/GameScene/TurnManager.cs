@@ -153,6 +153,7 @@ public class TurnManager : MonoBehaviour
     public void ClearPlayers()
     {
         players.Clear();
+        turnManager_players.Clear();
         currentPlayerIndex = 0;
     }
 }
