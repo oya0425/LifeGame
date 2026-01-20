@@ -22,5 +22,5 @@ public class ResultSummaryUI : MonoBehaviour
             $"Š‹àF\n{MyUtility.FormatMoneyManEn(playerData.money)}";
 
         diffMoneyText.text =
-            $"·ŠzF\n{MyUtility.FormatMoneyManEn(playerData.money - playerData.targetMoney)}";    }
+            $"·ŠzF\n{MyUtility.FormatEventMoneyManEn(playerData.money - playerData.targetMoney)}";    }
 }

@@ -247,6 +247,8 @@ public class GameManager : MonoBehaviour
                 OnEventStart();
                 break;
             case MODE.EndTurn:
+                TurnManager.instance.OnGameFinish -= OnEndTurnToResult;
+                TurnManager.instance.OnGameFinish += OnEndTurnToResult;
                 StartCoroutine(OnEndTurnStart());
                 break;
             case MODE.Result:
@@ -862,16 +864,23 @@ public class GameManager : MonoBehaviour
         eventTextManager.Show();
         eventTextManager.OnClicked -= OnEndEventText;
         eventTextManager.OnClicked += OnEndEventText;
-        if (currentMoney < newMoney)
+        if (delta == 0)
         {
-            eventTextManager.SetMessageText($"{MyUtility.FormatMoneyManEn(delta)}もらった!\n"
+            eventTextManager.SetMessageText($"何も起きなかった\n"
+                                    + "<align=right>クリックで次へ</align>");
+            playerStatusUI.ChangeSetMoney(playerData.money);
+
+        }
+        else if (currentMoney < newMoney)
+        {
+            eventTextManager.SetMessageText($"{MyUtility.FormatEventMoneyManEn(delta)}もらった!\n"
                                                 + "<align=right>クリックで次へ</align>");
             playerStatusUI.ChangeSetMoney(playerData.money);
 
         }
         else
         {
-            eventTextManager.SetMessageText($"{MyUtility.FormatMoneyManEn(delta)}失った...\n"
+            eventTextManager.SetMessageText($"{MyUtility.FormatEventMoneyManEn(delta)}失った...\n"
                                                 + "<align=right>クリックで次へ</align>");
             playerStatusUI.ChangeSetMoney(playerData.money);
 
@@ -937,6 +946,10 @@ public class GameManager : MonoBehaviour
         playerStatusUI.Show();
         
         ChangeMode(MODE.SelectAction);
+    }
+    void OnEndTurnToResult()
+    {
+        ChangeMode(MODE.Result);
     }
 
     #endregion

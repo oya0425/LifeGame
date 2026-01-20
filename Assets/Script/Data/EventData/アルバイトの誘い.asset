@@ -17,11 +17,11 @@ MonoBehaviour:
   - "\u30D0\u30A4\u30C8\u5148\u304B\u3089\u9023\u7D61\u304C\u6765\u305F\u3002"
   - "\u4EBA\u624B\u304C\u8DB3\u308A\u306A\u3044\u3089\u3057\u3044\u3002"
   choiceAText: "\u5F15\u304D\u53D7\u3051\u308B"
-  choiceBText: "\u65AD\u308B"
+  choiceBText: "\u3060\u304C\u65AD\u308B"
   resultAText: "\u75B2\u308C\u305F\u304C\u3001\u7D66\u6599\u306F\u5897\u3048\u305F\u3002"
   resultBText: "\u4F11\u3081\u305F\u304C\u3001\u53CE\u5165\u306F\u5897\u3048\u306A\u304B\u3063\u305F\u3002"
-  choiceAMinMoney: 30
-  choiceAMaxMoney: 60
+  choiceAMinMoney: 300
+  choiceAMaxMoney: 600
   choiceBMinMoney: 0
   choiceBMaxMoney: 0
   backGround: {fileID: 21300000, guid: fd428c14ae69b5b409a5f2312ae2e497, type: 3}

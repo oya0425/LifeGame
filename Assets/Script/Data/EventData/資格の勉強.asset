@@ -20,8 +20,8 @@ MonoBehaviour:
   choiceBText: "\u3084\u3081\u3066\u304A\u304F"
   resultAText: "\u5408\u683C\u3057\u305F\u3002\u81EA\u4FE1\u304C\u3064\u3044\u305F\u3002"
   resultBText: "\u4F55\u3082\u5909\u308F\u3089\u306A\u304B\u3063\u305F\u3002"
-  choiceAMinMoney: 50
-  choiceAMaxMoney: 100
+  choiceAMinMoney: 500
+  choiceAMaxMoney: 1000
   choiceBMinMoney: 0
   choiceBMaxMoney: 0
   backGround: {fileID: 21300000, guid: 9a883d7d4c1287841834dd86642ad732, type: 3}

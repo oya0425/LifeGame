@@ -20,10 +20,10 @@ MonoBehaviour:
   choiceBText: "\u614E\u91CD\u306B\u884C\u52D5"
   resultAText: "\u3088\u304F\u308F\u304B\u3089\u306A\u3044\u7D50\u679C\u306B\u306A\u3063\u305F\u3002"
   resultBText: "\u5B89\u5B9A\u3057\u305F\u6210\u679C\u3092\u51FA\u3057\u305F\u3002"
-  choiceAMinMoney: -1000
-  choiceAMaxMoney: 500
-  choiceBMinMoney: 100
-  choiceBMaxMoney: 200
+  choiceAMinMoney: -10000
+  choiceAMaxMoney: 10000
+  choiceBMinMoney: 1000
+  choiceBMaxMoney: 2000
   backGround: {fileID: 21300000, guid: 4d6f780f786c4134a8ffb2f3fad55f19, type: 3}
   mainImg: {fileID: 21300000, guid: 1d77cd12e57aa994f82fa87ef2bc022f, type: 3}
   resultAImage: {fileID: 21300000, guid: c641282770d238f4ab846669b031ad7b, type: 3}

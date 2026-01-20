@@ -22,6 +22,8 @@ public class TurnManager : MonoBehaviour
     /// <summary>現在行動中のプレイヤー番号（players の index）</summary>
     [SerializeField]private int currentPlayerIndex = -1;
 
+    public event Action OnGameFinish;
+
     [Tooltip("全体のターン数")]
     public int allTurn = 30;
     [Tooltip("現在のターン数")]
@@ -89,6 +91,8 @@ public class TurnManager : MonoBehaviour
         Debug.Log("ゲーム終了");
 
         // リザルト表示、入力停止などをここに書く
+        OnGameFinish?.Invoke();
+
     }
 
     /// <summary>

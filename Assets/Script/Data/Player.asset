@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f551e8ffba67f409fb9821c560c467, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  name: 
-  money: 0
+  playerName: 
+  money: 100
   positionIndex: 0
   playerPrefab: {fileID: 62945518004038374, guid: 91759df9c81919c48b5b1d9c5a10b8a2, type: 3}
+  number: 0
+  isOrderDecided: 0
+  playerColor: {r: 0, g: 0, b: 0, a: 0}
+  isGoal: 0
+  targetMoney: 0
+  targetGoalData: {fileID: 0}

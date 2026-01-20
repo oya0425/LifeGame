@@ -103,10 +103,11 @@ public class PlayerMover : MonoBehaviour
             int nextTileIndex = currentTileIndex+1;
             if (nextTileIndex >= tiles.Count)
             {
-                isReachedGoal = true;
-                PlayerData nowPlayerData = TurnManager.instance.GetCurrentPlayerData();
-                nowPlayerData.isGoal = isReachedGoal;
-                break;
+                //isReachedGoal = true;
+                //PlayerData nowPlayerData = TurnManager.instance.GetCurrentPlayerData();
+                //nowPlayerData.isGoal = isReachedGoal;
+                nextTileIndex = 1;
+                //break;
             }
 
             Vector3 start = transform.position;

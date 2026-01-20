@@ -14,6 +14,12 @@ public class MoveCamera : MonoBehaviour
     private Vector3 initialPos;
     private Quaternion initialRot;
 
+    // --- 追加 ---
+    [SerializeField] float switchSpeed = 2.5f;
+
+    bool isSwitching = false;
+    PlayerMover switchTarget = null;
+
     private void Awake()
     {
         instance = this;
@@ -41,6 +47,8 @@ public class MoveCamera : MonoBehaviour
         // 1. 移動中のプレイヤー（最優先）
         if (activePlayer != null && activePlayer.GetIsMove())
         {
+            isSwitching = false;   // ← 追加
+
             FollowPlayer(activePlayer);
             return;
         }
@@ -49,7 +57,9 @@ public class MoveCamera : MonoBehaviour
         PlayerMover next = GetNextPlayer();
         if (next != null)
         {
-            LookDownPlayer(next);
+            StartSwitch(next);
+            UpdateSwitch();
+            //LookDownPlayer(next);
             return;
         }
 
@@ -89,6 +99,37 @@ public class MoveCamera : MonoBehaviour
         //    transform.rotation = Quaternion.Slerp(transform.rotation, initialRot, Time.deltaTime * returnSpeed);
 
         //}
+    }
+
+    void StartSwitch(PlayerMover next)
+    {
+        if (isSwitching && switchTarget == next)
+            return;
+
+        isSwitching = true;
+        switchTarget = next;
+    }
+
+    void UpdateSwitch()
+    {
+        if (!isSwitching || switchTarget == null) return;
+
+        Vector3 targetPos =
+            switchTarget.transform.position
+            + Vector3.up * (height * 5f)
+            - switchTarget.transform.forward * distance;
+
+        transform.position = Vector3.Lerp(
+            transform.position,
+            targetPos,
+            Time.deltaTime * switchSpeed);
+
+        Quaternion targetRot = Quaternion.LookRotation(
+            switchTarget.transform.position - transform.position);
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRot,
+            Time.deltaTime * switchSpeed);
     }
 
     // --- 最初の位置に戻っているか ---

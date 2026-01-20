@@ -44,9 +44,20 @@ public class ResultManager : MonoBehaviour
 
     private void SortAndSetRank()
     {
+        //所持金でソート大きい順
+        //resultEntryDatas = resultEntryDatas
+        //    .OrderByDescending(e => e.money).ToList();
+        //for(int i = 0; i < resultEntryDatas.Count; i++)
+        //{
+        //    resultEntryDatas[i].rank = i + 1;
+        //}
+
+        //差額でソート小さい順 Mathf.Abs(マイナスを除去（距離でやる）)
         resultEntryDatas = resultEntryDatas
-            .OrderByDescending(e => e.money).ToList();
-        for(int i = 0; i < resultEntryDatas.Count; i++)
+        .OrderBy(e => Mathf.Abs(e.money - e.targetMoney))
+        .ToList();
+
+        for (int i = 0; i < resultEntryDatas.Count; i++)
         {
             resultEntryDatas[i].rank = i + 1;
         }

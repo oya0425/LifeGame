@@ -21,6 +21,7 @@ public static class MyUtility
         int restMan = absMan % 10000;
 
         string result;
+        
 
         if (oku > 0 && restMan > 0)
             result = $"{oku} 億 {restMan} 万円";
@@ -30,7 +31,28 @@ public static class MyUtility
             result = $"{absMan} 万円";
 
         // マイナスなら先頭に − を付ける
-        return isMinus ? $"−{result}" : result;
+        return isMinus ? $"-{result}" : result;
+    }
+    public static string FormatEventMoneyManEn(int man)
+    {
+        bool isMinus = man < 0;
+        int absMan = Mathf.Abs(man);
+
+        int oku = absMan / 10000;
+        int restMan = absMan % 10000;
+
+        string result;
+
+
+        if (oku > 0 && restMan > 0)
+            result = $"{oku} 億 {restMan} 万円";
+        else if (oku > 0)
+            result = $"{oku} 億円";
+        else
+            result = $"{absMan} 万円";
+
+        // マイナスなら先頭に − を付ける
+        return isMinus ? $"{result}" : result;
     }
 
 
