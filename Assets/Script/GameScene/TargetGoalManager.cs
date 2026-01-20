@@ -40,7 +40,6 @@ public class TargetGoalManager : MonoBehaviour
             return;
         }
         targetUIController.Show();
-        Debug.Log("Show通った");
 
         targetUIController.OnChoiceSelected -= OnChoiceSelected;
         targetUIController.OnChoiceSelected += OnChoiceSelected;
@@ -62,9 +61,13 @@ public class TargetGoalManager : MonoBehaviour
             {
                 yield break; // フロー中断（クラッシュ回避）
             }
+            string colorCode = ColorUtility.ToHtmlStringRGB(playerData.playerColor);
+
             //UI表示
             targetUIController.SetMessage(
                 $"{playerData.playerName}は、目標を選択してください。");
+            targetUIController.SetMessage(
+            $"<color=#{colorCode}>{playerData.playerName}</color>は、目標を選択してください。");
 
             targetUIController.SetChoices(
             new string[]
@@ -110,7 +113,7 @@ public class TargetGoalManager : MonoBehaviour
 
             // --- 結果メッセージ表示 ---
             targetUIController.SetMessage(
-                $"({selected.title})\n{playerData.playerName} の目標金額は {moneyText} です。\n" +
+                $"({selected.title})\n<color=#{colorCode}>{playerData.playerName}</color> の目標金額は {moneyText} です。\n" +
                 "<align=right>クリックで次へ</align>"
             );
 

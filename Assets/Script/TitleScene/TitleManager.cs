@@ -63,7 +63,7 @@ public class TitleManager : MonoBehaviour
     // ------------------------------
     Color[] colors = new Color[8]
     {
-        Color.red, Color.blue, Color.green, Color.yellow,
+        /*Color.red*/new Color(1.0f, 0.55f, 0.25f),/* Color.blue*/new Color(0.25f, 0.55f, 1.0f), Color.green, Color.yellow,
         Color.magenta, Color.cyan,
         new Color(1f,0.5f,0f),       // オレンジ
         new Color(0.5f,0f,1f)        // パープル

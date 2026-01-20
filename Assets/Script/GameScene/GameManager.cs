@@ -366,7 +366,7 @@ public class GameManager : MonoBehaviour
             {
                 // UI更新
                 TurnUI.instance.UpdateAllResults();
-                orderSelectUI.SetMessage($"再抽選ルーレットを回そう！:{playersToReRoll[0].playerName}");
+                orderSelectUI.SetMessage($"再抽選ルーレットを回そう！:{playersToReRoll[rerollCount].playerName}");
 
                 StartReRoll();
                 //再抽選時に全員がルーレットを回すまで待つ
@@ -570,7 +570,7 @@ public class GameManager : MonoBehaviour
             var nextPlayer =
                 PlayerManager.instance.playerDataList[selectCount];
             orderSelectUI.SetMessage(
-                $"ルーレットを回そう！: {nextPlayer.name}"
+                $"ルーレットを回そう！:{nextPlayer.playerName}"
             );
         }
 
@@ -599,6 +599,7 @@ public class GameManager : MonoBehaviour
             rerollCount + 1);
 
         rerollCount++;
+        orderSelectUI.SetMessage($"再抽選ルーレットを回そう！:{playersToReRoll[rerollCount].playerName}");
 
         DiceSpinner.instance.ResetNeedle();
 

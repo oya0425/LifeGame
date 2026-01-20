@@ -17,6 +17,9 @@ public class PlayerStatusView : MonoBehaviour
     [Tooltip("–Ú•W‹àŠz")]
     [SerializeField] TextMeshProUGUI moneyTargetText;
 
+    [Tooltip("–¼‘O")]
+    [SerializeField] TextMeshProUGUI playerNameText;
+
     int displayedMoney;
     Coroutine moneyAnimCoroutine;
 
@@ -37,6 +40,7 @@ public class PlayerStatusView : MonoBehaviour
         displayedMoney = currentPlayerData.money;
         SetPlayerColor(currentPlayerData.playerColor);
         SetMoney(currentPlayerData.money);
+        SetName(currentPlayerData.playerName);
         SetTargetMoney(currentPlayerData.targetMoney);
     }
 
@@ -50,6 +54,11 @@ public class PlayerStatusView : MonoBehaviour
     void SetMoney(int money)
     {
         moneyValueText.text = MyUtility.FormatMoneyManEn(money);
+    }
+
+    void SetName(string name)
+    {
+        playerNameText.text = name;
     }
     public void ChangeSetMoney(int money)
     {
