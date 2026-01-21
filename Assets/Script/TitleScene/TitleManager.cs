@@ -35,6 +35,9 @@ public class TitleManager : MonoBehaviour
     [SerializeField, Header("背景")]
     Sprite[] BackImg = new Sprite[2];  // 0=タイトル、1=プレイヤー選択
     SpriteRenderer myBG;
+    Image myImgBackGround;
+
+    [SerializeField] GameObject frameObj;
 
 
     // ------------------------------
@@ -56,7 +59,11 @@ public class TitleManager : MonoBehaviour
     // ------------------------------
     public Button PlusButton;
     public Button MinusButton;
+    public Button StartButton;
 
+    //スタートボタンの位置
+    public RectTransform titlePos_Button;
+    public RectTransform selectPos_Button;
 
     // ------------------------------
     //    プレイヤーカラー
@@ -81,10 +88,13 @@ public class TitleManager : MonoBehaviour
     private void Start()
     {
         myBG = GetComponent<SpriteRenderer>();
+        myImgBackGround=GetComponent<Image>();
         playerCount = 0;
         playerColor.Clear();
         playerObjects.Clear();
         SetTitle();   // タイトル状態で初期化
+        frameObj.SetActive(false);
+        StartButton.transform.position=titlePos_Button.transform.position;
     }
 
 
@@ -128,6 +138,8 @@ public class TitleManager : MonoBehaviour
             case MODE.TITLE:
                 CreatePlayerFrame();
                 SetSelect();
+                StartButton.transform.position = selectPos_Button.transform.position;
+                frameObj.SetActive(true);
                 break;
 
             // 人数選択 → ゲーム開始
@@ -203,7 +215,8 @@ public class TitleManager : MonoBehaviour
     private void SetTitle()
     {
         titleMode = MODE.TITLE;
-        myBG.sprite = BackImg[0];
+        //myBG.sprite = BackImg[0];
+        myImgBackGround.sprite = BackImg[0];
         SetButton();
     }
 
@@ -213,7 +226,8 @@ public class TitleManager : MonoBehaviour
     private void SetSelect()
     {
         titleMode = MODE.SELECTPLAYER;
-        myBG.sprite = BackImg[1];
+        //myBG.sprite = BackImg[1];
+        myImgBackGround.sprite = BackImg[1];
         SetButton();
     }
 }

@@ -58,6 +58,10 @@ public class GameManager : MonoBehaviour
 
     PlayerData playerData;
 
+    [SerializeField,Header("フレームコントローラー")]
+    public FrameColorController frameColorController;
+
+
     // --- 目標決定の変数 ---
     [SerializeField, Tooltip("目標のデータ所持")]
     TargetGoalManager targetGoalManager;
@@ -162,6 +166,7 @@ public class GameManager : MonoBehaviour
         OnHideRankingFinished();
         resultDetailManager.Hide();
         eventTextManager.Hide();
+        frameColorController.SetColor(Color.white);
 
         tileEvent = new TileEvent(eventUIController);
 
@@ -287,9 +292,11 @@ public class GameManager : MonoBehaviour
         DiceSpinner.instance.SetOrderSelectPosition();
         //説明を表示
         orderSelectUI.Show();
+        string colorCode = ColorUtility.ToHtmlStringRGB(PlayerManager.instance.playerDataList[0].playerColor);
+        frameColorController.SetColor(PlayerManager.instance.playerDataList[0].playerColor);
         orderSelectUI.SetMessage(
             $"ルーレットを回そう！:" +
-            $"{PlayerManager.instance.playerDataList[0].playerName}");
+            $"<color=#{colorCode}>{PlayerManager.instance.playerDataList[0].playerName}</color>");
 
 
         // 順番決め開始
@@ -366,7 +373,10 @@ public class GameManager : MonoBehaviour
             {
                 // UI更新
                 TurnUI.instance.UpdateAllResults();
-                orderSelectUI.SetMessage($"再抽選ルーレットを回そう！:{playersToReRoll[rerollCount].playerName}");
+                string colorCode = ColorUtility.ToHtmlStringRGB(playersToReRoll[rerollCount].playerColor);
+                frameColorController.SetColor(playersToReRoll[rerollCount].playerColor);
+
+                orderSelectUI.SetMessage($"再抽選ルーレットを回そう！:<color=#{colorCode}>{playersToReRoll[rerollCount].playerName}</color>");
 
                 StartReRoll();
                 //再抽選時に全員がルーレットを回すまで待つ
@@ -379,6 +389,7 @@ public class GameManager : MonoBehaviour
             //全員終了したら
             break;
         }
+        frameColorController.SetColor(Color.white);
         orderSelectUI.SetMessage("順番決定！");
 
         yield return new WaitForSeconds(2f);
@@ -569,8 +580,11 @@ public class GameManager : MonoBehaviour
         {
             var nextPlayer =
                 PlayerManager.instance.playerDataList[selectCount];
+            string colorCode = ColorUtility.ToHtmlStringRGB(nextPlayer.playerColor);
+            frameColorController.SetColor(nextPlayer.playerColor);
+
             orderSelectUI.SetMessage(
-                $"ルーレットを回そう！:{nextPlayer.playerName}"
+                $"ルーレットを回そう！:<color=#{colorCode}>{nextPlayer.playerName}</color>"
             );
         }
 
@@ -582,6 +596,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void ProcessReRoll(int number)
     {
+
         if (playersToReRoll == null ||
             rerollCount >= playersToReRoll.Count) return;
 
@@ -599,7 +614,16 @@ public class GameManager : MonoBehaviour
             rerollCount + 1);
 
         rerollCount++;
-        orderSelectUI.SetMessage($"再抽選ルーレットを回そう！:{playersToReRoll[rerollCount].playerName}");
+
+        if (rerollCount < playersToReRoll.Count)
+        {
+            string colorCode = ColorUtility.ToHtmlStringRGB(playersToReRoll[rerollCount].playerColor);
+            frameColorController.SetColor(playersToReRoll[rerollCount].playerColor);
+
+            orderSelectUI.SetMessage(
+                $"再抽選ルーレットを回そう！:<color=#{colorCode}>{playersToReRoll[rerollCount].playerName}</color>"
+            );
+        }
 
         DiceSpinner.instance.ResetNeedle();
 
@@ -631,7 +655,7 @@ public class GameManager : MonoBehaviour
         TurnManager.instance.StartTurn();
         playerData = TurnManager.instance.GetCurrentPlayerData();
         playerStatusUI.SetPlayer(playerData);
-
+        frameColorController.SetColor(playerData.playerColor);
         playerStatusUI.Show();
 
     }
@@ -945,7 +969,8 @@ public class GameManager : MonoBehaviour
         // UI 更新
         playerStatusUI.SetPlayer(playerData);
         playerStatusUI.Show();
-        
+        frameColorController.SetColor(playerData.playerColor);
+
         ChangeMode(MODE.SelectAction);
     }
     void OnEndTurnToResult()

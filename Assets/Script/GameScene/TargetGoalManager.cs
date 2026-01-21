@@ -62,6 +62,7 @@ public class TargetGoalManager : MonoBehaviour
                 yield break; // フロー中断（クラッシュ回避）
             }
             string colorCode = ColorUtility.ToHtmlStringRGB(playerData.playerColor);
+            GameManager.instance.frameColorController.SetColor(playerData.playerColor);
 
             //UI表示
             targetUIController.SetMessage(
