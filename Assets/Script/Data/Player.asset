@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Player
   m_EditorClassIdentifier: 
   playerName: 
-  money: 100
+  money: 1000
   positionIndex: 0
   playerPrefab: {fileID: 62945518004038374, guid: 91759df9c81919c48b5b1d9c5a10b8a2, type: 3}
   number: 0

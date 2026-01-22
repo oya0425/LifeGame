@@ -171,6 +171,8 @@ public class GameManager : MonoBehaviour
         tileEvent = new TileEvent(eventUIController);
 
         currentMoney = 0;
+
+
         // --------------
 
 
@@ -181,8 +183,15 @@ public class GameManager : MonoBehaviour
 
         // 最初は順番決めモード
         ChangeMode(MODE.NONE);
+        //StartCoroutine(StartGameFlow());
+
+        StartCoroutine(StartGame());
         StartCoroutine(StartGameFlow());
 
+    }
+    private IEnumerator StartGame()
+    {
+        yield return ScreenTransition.instance.PlayShrink();
 
     }
 
@@ -192,6 +201,7 @@ public class GameManager : MonoBehaviour
         yield return null;
 
         ChangeMode(MODE.TargetGoalSetting);
+        
     }
 
     [Tooltip("状態遷移")]
@@ -259,7 +269,7 @@ public class GameManager : MonoBehaviour
             case MODE.Result:
                 isResult = true;
                 Debug.Log("Result通った");
-                OnResultStart();
+                StartCoroutine(OnResultStart());
                 break;
         }
         eMode = next;
@@ -955,15 +965,16 @@ public class GameManager : MonoBehaviour
             }
         }
         Debug.Log($"allGoal{allGoal}");
-        if (allGoal)
+        if (allGoal||TurnManager.instance.bOnfinish)
         {
+
             ChangeMode(MODE.Result);
             yield break; // ← ここ超重要
         }
         yield return new WaitForSeconds(1.0f);
 
         turnM.EndTurn();
-
+        if(TurnManager.instance.bOnfinish) yield break;
         playerData = TurnManager.instance.GetCurrentPlayerData();
 
         // UI 更新
@@ -976,13 +987,20 @@ public class GameManager : MonoBehaviour
     void OnEndTurnToResult()
     {
         ChangeMode(MODE.Result);
+        HideSelectActionView();
+
     }
 
     #endregion
     #region リザルト処理
 
-    private void OnResultStart()
+    private IEnumerator OnResultStart()
     {
+
+        // ① 画面を黒で覆う
+        yield return ScreenTransition.instance.PlayerExpandShrink();
+        
+
         playerStatusUI.Hide();
         HideSelectActionView();
         isEndEvent = false;
@@ -996,7 +1014,11 @@ public class GameManager : MonoBehaviour
         resultUI.ShowRanking(
         resultManager.GetResultEntryList()
           );
+
         resultUI.Show();
+
+
+        yield return ScreenTransition.instance.PlayShrink();
 
         //// お金の量で降順ソート
         //players.Sort((a, b) => b.money.CompareTo(a.money));

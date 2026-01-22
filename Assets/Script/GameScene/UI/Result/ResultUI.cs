@@ -79,7 +79,9 @@ public class ResultUI : MonoBehaviour
     
     IEnumerator MoveRankingItems()
     {
-        for(int i=rankingItemRects.Count-1; i >= 0; i--)
+        yield return new WaitForSeconds(3.0f);
+
+        for (int i=rankingItemRects.Count-1; i >= 0; i--)
         {
             RectTransform item = rankingItemRects[i];
             RectTransform targetPos = rankTargetPosList[i];
@@ -87,7 +89,7 @@ public class ResultUI : MonoBehaviour
             yield return StartCoroutine(
                 MoveToPosition(item, targetPos.anchoredPosition, 1.4f)
                 );
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(1.0f);
         }
 
         //ââèoäÆóπí ím

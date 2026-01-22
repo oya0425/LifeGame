@@ -1,9 +1,10 @@
 using System;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 /// タイトル画面の管理クラス。
@@ -53,17 +54,31 @@ public class TitleManager : MonoBehaviour
 
     TextMeshProUGUI txtplayerName; // Player1 などのテキスト
 
+    public static int allTurn;
+    [SerializeField] TextMeshProUGUI allTurnText;
+
+    private const int MIN_TURN = 5;
+    private const int MAX_TURN = 30;
+    private const int TURN_STEP = 5;
+
+    //ゲームスタートの時に出る拡大されるやつ
+    [SerializeField] private RectTransform gameStartText;
 
     // ------------------------------
     //    ボタン
     // ------------------------------
-    public Button PlusButton;
-    public Button MinusButton;
+    public Button playerPlusButton;
+    public Button playerMinusButton;
     public Button StartButton;
 
     //スタートボタンの位置
     public RectTransform titlePos_Button;
     public RectTransform selectPos_Button;
+
+    //ターン設定ボタン
+    public Button turnPlusButton;
+    public Button turnMinusButton;
+
 
     // ------------------------------
     //    プレイヤーカラー
@@ -95,6 +110,11 @@ public class TitleManager : MonoBehaviour
         SetTitle();   // タイトル状態で初期化
         frameObj.SetActive(false);
         StartButton.transform.position=titlePos_Button.transform.position;
+        gameStartText.gameObject.SetActive(false);
+
+        allTurn = MIN_TURN;
+        allTurnText.text = $"ターン数:{allTurn}";
+
     }
 
 
@@ -110,13 +130,24 @@ public class TitleManager : MonoBehaviour
         switch (titleMode)
         {
             case MODE.TITLE:
-                PlusButton.gameObject.SetActive(false);
-                MinusButton.gameObject.SetActive(false);
+                playerPlusButton.gameObject.SetActive(false);
+                playerMinusButton.gameObject.SetActive(false);
+                turnPlusButton.gameObject.SetActive(false);
+                turnMinusButton.gameObject.SetActive(false);
+                
+                allTurnText.gameObject.SetActive(false);
                 break;
 
             case MODE.SELECTPLAYER:
-                PlusButton.gameObject.SetActive(true);
-                MinusButton.gameObject.SetActive(true);
+                playerPlusButton.gameObject.SetActive(true);
+                playerMinusButton.gameObject.SetActive(true);
+                turnPlusButton.gameObject.SetActive(true);
+                turnMinusButton.gameObject.SetActive(true);
+                UpdateTurnButtonState();
+                UpdatePlayerButtonState();
+                
+                allTurnText.gameObject.SetActive(true);
+                
                 break;
         }
     }
@@ -144,12 +175,42 @@ public class TitleManager : MonoBehaviour
 
             // 人数選択 → ゲーム開始
             case MODE.SELECTPLAYER:
-                SceneManager.LoadScene("GameScene");
+                StartCoroutine(GameStartSeqience());
                 //SceneManager.LoadScene("DebugScene");
                 break;
         }
     }
+    
+    private IEnumerator GameStartSeqience()
+    {
+        //ボタン入力を止める
+        StartButton.interactable = false;
+        playerPlusButton.interactable = false;
+        playerMinusButton.interactable=false;
 
+        turnPlusButton.interactable = false;
+        turnMinusButton.interactable = false;
+
+        //GameStartを表示
+        gameStartText.gameObject.SetActive(true);
+        gameStartText.localScale = Vector3.zero;
+
+        float time = 0;
+        float duration = 0.5f;
+        while (time < duration)
+        {
+            time += Time.deltaTime/3;
+            float t=time/duration;
+            gameStartText.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        SceneManager.LoadScene("GameScene");
+        
+
+    }
 
     // ------------------------------
     //    ＋ボタン：プレイヤー追加
@@ -159,6 +220,7 @@ public class TitleManager : MonoBehaviour
         if (playerCount == PLAYERMAX) return;
 
         CreatePlayerFrame();
+        UpdatePlayerButtonState();
     }
 
 
@@ -175,8 +237,13 @@ public class TitleManager : MonoBehaviour
         playerColor.RemoveAt(playerCount - 1);
 
         playerCount--;
+        UpdatePlayerButtonState();
     }
-
+    private void UpdatePlayerButtonState()
+    {
+        playerPlusButton.interactable = (playerCount < PLAYERMAX);
+        playerMinusButton.interactable = (playerCount > PLAYERMIN);
+    }
 
     // ------------------------------
     //    共通：プレイヤー枠生成
@@ -203,6 +270,42 @@ public class TitleManager : MonoBehaviour
 
         // プレイヤーオブジェクト一覧にも追加
         playerObjects.Add(obj);
+    }
+
+    // ------------------------------
+    //    ターン追加
+    // ------------------------------
+    public void TurnPlusButton()
+    {
+        allTurn += TURN_STEP;
+
+        if (allTurn > MAX_TURN)
+        {
+            allTurn = MAX_TURN;
+        }
+        allTurnText.text = $"ターン数:{allTurn}";
+        UpdateTurnButtonState();
+    }
+
+    // ------------------------------
+    //    ターン減少
+    // ------------------------------
+    public void TurnMinusButton()
+    {
+        allTurn -= TURN_STEP;
+        if (allTurn < MIN_TURN)
+        {
+            allTurn = MIN_TURN;
+        }
+        allTurnText.text = $"ターン数:{allTurn}";
+
+        UpdateTurnButtonState();
+    }
+    //ボタンを押せないようにする
+    private void UpdateTurnButtonState()
+    {
+        turnPlusButton.interactable = (allTurn < MAX_TURN);
+        turnMinusButton.interactable = (allTurn > MIN_TURN);
     }
 
 

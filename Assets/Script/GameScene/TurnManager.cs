@@ -1,6 +1,7 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// プレイヤーの行動順を管理するクラス。
@@ -29,6 +30,8 @@ public class TurnManager : MonoBehaviour
     [Tooltip("現在のターン数")]
     public int currentTurn = 1;
 
+    public bool bOnfinish;
+
     public TurnTextUI turnTextUI;
 
     void Awake()
@@ -40,6 +43,8 @@ public class TurnManager : MonoBehaviour
     {
         // ※プレイヤーが揃ってから StartTurn を呼ぶ想定なので未使用
         // if (players.Count > 0) StartTurn();
+        bOnfinish = false;
+        allTurn=TitleManager.allTurn; 
     }
 
 
@@ -48,6 +53,7 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     public void StartTurn()
     {
+
         turnTextUI.UpdateTurnText(currentTurn, allTurn);
         Debug.Log("currentPlayerIndex = " + TurnManager.instance.currentPlayerIndex);
         players[currentPlayerIndex].isMyTurn = true;
@@ -62,27 +68,37 @@ public class TurnManager : MonoBehaviour
     {
         players[currentPlayerIndex].isMyTurn = false;
 
-        // 次のプレイヤーへ移動
-        currentPlayerIndex++;
-        if (currentPlayerIndex >= players.Count)
+        // 次のプレイヤーに進む前に「ターン終了か」を判定
+        if (currentPlayerIndex == players.Count - 1)
         {
-            currentPlayerIndex = 0;
-
-            //１ターン終了　次のターンへ
+            // 全員終わった＝1ターン終了
             currentTurn++;
+
+            if (currentTurn > allTurn)
+            {
+                bOnfinish = true;
+                OnGameEnd();
+                return;
+            }
+
+            currentPlayerIndex = 0;
+        }
+        else
+        {
+            currentPlayerIndex++;
         }
 
-        CheckTurnEnd();
+        StartTurn();
     }
 
-    private void CheckTurnEnd()
+    private IEnumerator CheckTurnEnd()
     {
         if (currentTurn > allTurn)
         {
             OnGameEnd();
-            return;
+            yield break;
         }
-
+        yield return null;
         StartTurn();
     }
 
