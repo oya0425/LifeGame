@@ -86,7 +86,7 @@ public class TargetGoalManager : MonoBehaviour
                 choices[3].description,
             }
             );
-
+            
 
             //‘I‘ð‘Ò‚¿
             isWaitingForChoice = true;

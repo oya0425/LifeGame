@@ -28,9 +28,12 @@ public class SelectActionViewUI : MonoBehaviour
         buttonMapUI.onClick.AddListener(() => gameManager.OnActionSelected(eActionType.Map));
         buttonBackUI.onClick.AddListener(() => gameManager.OnBackButton(gameManager.GetActionType()));
     }
-    private void Update()
+    /// <summary>
+    /// アイテムボタンの有効無効 
+    /// </summary>
+    public void SetItemButtonInteractable(bool value)
     {
-        
+        buttonItemUI.interactable = value;
     }
 
 

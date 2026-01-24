@@ -14,8 +14,8 @@ public class TargetSettingUIController : MonoBehaviour
     public Action<int> OnChoiceSelected;
 
     // --- ’Ç‰Á ---
-    string defaultMessage;
-    string[] currentDescriptions;
+    string defaultMessage;  
+    string[] currentDescriptions;//à–¾•¶‚ğã‘‚«‚Å‚Í‚È‚­AÅ‰‚É“o˜^‚µ‚½‚à‚Ì‚ğ‘I‘ğ‚µ‚Ä•\¦‚·‚é
     bool isHovering;
 
     private void Start()
@@ -72,6 +72,7 @@ public class TargetSettingUIController : MonoBehaviour
     /// </summary>
     public void SetChoices(string[] titles, string[] descriptions)
     {
+        
         currentDescriptions = descriptions;
 
         for (int i = 0; i < choiceButtons.Length; i++)

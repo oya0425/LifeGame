@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 /// <summary>
 /// ゲーム内で使用するプレイヤー1人分のデータを保持する ScriptableObject。
 /// 名前、所持金、現在位置、使用モデル、順番、色など、
@@ -44,4 +44,7 @@ public class PlayerData : ScriptableObject
 
     [Tooltip("選ばれた目標データ")]
     public TargetGoalData targetGoalData;
+
+    [Header("所持アイテム一覧"),Tooltip("所持アイテム一覧")]
+    public List<ItemData> itemList = new List<ItemData>();
 }

@@ -107,6 +107,16 @@ public class GameManager : MonoBehaviour
     // ----------------------
 
 
+    // --- アイテム処理の変数 ---
+    [Tooltip("アイテムを使用できるかどうか")]
+    public bool isItem;
+    [SerializeField]private ItemUIController itemUIController;
+
+    [SerializeField]private SelectActionViewUI selectActionViewUI;
+
+    // --------------------------
+
+
     // --- ダイスの処理の変数 ---
     [Tooltip("ルーレットのオブジェクト")]
     [SerializeField] private GameObject diceView;
@@ -171,7 +181,7 @@ public class GameManager : MonoBehaviour
         tileEvent = new TileEvent(eventUIController);
 
         currentMoney = 0;
-
+        isItem = true;
 
         // --------------
 
@@ -243,9 +253,10 @@ public class GameManager : MonoBehaviour
 
                 break;
             case MODE.SelectAction:
+                selectActionViewUI.SetItemButtonInteractable(isItem);
                 ShowSelectActionView();
                 ShowBackButton();
-                OnSelectActionStart();
+                HideDiceView();
                 break;
             case MODE.Dice:
                 HideSelectActionView();
@@ -257,6 +268,8 @@ public class GameManager : MonoBehaviour
                 OnMoveStart();
                 break;
             case MODE.Item:
+                HideSelectActionView();
+                OnItemStart();
                 break;
             case MODE.Event:
                 OnEventStart();
@@ -684,6 +697,7 @@ public class GameManager : MonoBehaviour
     public void OnActionSelected(eActionType action)
     {
         actionType= action;
+
         switch (actionType)
         {
             case eActionType.Roulette:
@@ -692,6 +706,10 @@ public class GameManager : MonoBehaviour
                 ShowBackButtonUI();
                 break;
             case eActionType.Item:
+                ChangeMode(MODE.Item);
+
+                ShowBackButtonUI();
+
                 break;
             case eActionType.Map:
                 break;
@@ -709,6 +727,7 @@ public class GameManager : MonoBehaviour
                 HideBackButtonUI();
                 break;
             case eActionType.Item:
+                HideItemUI();
                 ChangeMode(MODE.SelectAction);
                 break;
             case eActionType.Map:
@@ -766,13 +785,52 @@ public class GameManager : MonoBehaviour
         DiceSpinner.instance.OnSpinStart -= HideBackButton;
         isRegistered = false;
     }
-    private void OnSelectActionStart()
+    /// <summary>
+    /// ルーレット非表示 
+    /// </summary> 
+    private void HideDiceView()
     {
         diceView.SetActive(false);
     }
 
     #endregion
 
+    #region アイテム画面処理
+    private void OnItemStart()
+    {
+        itemUIController.OnChoiceSelected -= OnItemSelected;
+        itemUIController.OnChoiceSelected += OnItemSelected;
+
+        itemUIController.Show();
+        string[] descriptions = new string[playerData.itemList.Count];
+
+        for (int i = 0; i < playerData.itemList.Count; i++)
+        {
+            descriptions[i] = playerData.itemList[i].itemDescription;
+        }
+
+        itemUIController.SetChoices(playerData, descriptions);
+    }
+    private void OnItemSelected(int index)
+    {
+        // 仮：使用ログ
+        Debug.Log("Item Used : " + index);
+        isItem = false;
+        selectActionViewUI.SetItemButtonInteractable(isItem);
+
+        playerData.itemList.RemoveAt(index);
+        itemUIController.ClearDescription();
+        HideItemUI();
+        ChangeMode(MODE.SelectAction);
+    }
+
+    private void HideItemUI()
+    {
+        itemUIController.Hide();
+    }
+
+
+    #endregion
 
     #region  ダイス操作処理
     void OnDiceStart()
@@ -858,7 +916,18 @@ public class GameManager : MonoBehaviour
                 break;
             case TileData.eTileType.LUCKY:
                 TileLucky tileLucky=new TileLucky();
-                tileLucky.Execute(tile, OnEventFinished);
+                //tileLucky.Execute(tile, OnEventFinished);
+
+
+                ItemData item = tileLucky.Execute(tile, OnEventFinished);
+
+                if (item != null)
+                {
+                    PlayerData nowPlayer = TurnManager.instance.GetCurrentPlayerData();
+                    nowPlayer.itemList.Add(item);
+
+                    Debug.Log($"{nowPlayer.playerName} は {item.itemName} を手に入れた");
+                }
 
                 tile.DebugLog();
 
@@ -975,8 +1044,9 @@ public class GameManager : MonoBehaviour
 
         turnM.EndTurn();
         if(TurnManager.instance.bOnfinish) yield break;
-        playerData = TurnManager.instance.GetCurrentPlayerData();
+        isItem = true;
 
+        playerData = TurnManager.instance.GetCurrentPlayerData();
         // UI 更新
         playerStatusUI.SetPlayer(playerData);
         playerStatusUI.Show();
