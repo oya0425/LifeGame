@@ -153,6 +153,9 @@ public class TileEvent
     /// </summary>
     void EndEvent()
     {
+        eventUI.OnTextClicked -= OnTextClicked;
+        eventUI.OnChoiceASelected -= OnChoiceASelected;
+        eventUI.OnChoiceBSelected -= OnChoiceBSelected;
         eventUI.HideAll();
         onFinished?.Invoke();
     }

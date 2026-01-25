@@ -143,6 +143,14 @@ public class GameManager : MonoBehaviour
 
     // --------------------------
 
+    // --- ラッキーマス処理の変数 ---
+    [SerializeField]
+    LuckyUIController luckyUIController;
+    TileLucky tileLucky;
+
+    // ------------------------------
+
+
 
     // --- リザルト処理の変数 ---
     [SerializeField] ResultManager resultManager;
@@ -179,7 +187,7 @@ public class GameManager : MonoBehaviour
         frameColorController.SetColor(Color.white);
 
         tileEvent = new TileEvent(eventUIController);
-
+        tileLucky = new TileLucky(luckyUIController);
         currentMoney = 0;
         isItem = true;
 
@@ -915,19 +923,7 @@ public class GameManager : MonoBehaviour
 
                 break;
             case TileData.eTileType.LUCKY:
-                TileLucky tileLucky=new TileLucky();
-                //tileLucky.Execute(tile, OnEventFinished);
-
-
-                ItemData item = tileLucky.Execute(tile, OnEventFinished);
-
-                if (item != null)
-                {
-                    PlayerData nowPlayer = TurnManager.instance.GetCurrentPlayerData();
-                    nowPlayer.itemList.Add(item);
-
-                    Debug.Log($"{nowPlayer.playerName} は {item.itemName} を手に入れた");
-                }
+                tileLucky.Execute(tile, OnLuckyEnd);
 
                 tile.DebugLog();
 
@@ -992,12 +988,41 @@ public class GameManager : MonoBehaviour
 
     }
 
+    void OnLuckyEnd()
+    {
+        ItemData getItem = tileLucky.GetItem();
+        bool canGetItem = playerData.itemList.Count < 3;
+
+        if (canGetItem)
+        {
+            playerData.itemList.Add(getItem);
+        }
+
+        OnLuckyText(getItem.itemName, canGetItem);
+    }
+    void OnLuckyText(string itemName,bool canGetItem)
+    {
+        eventTextManager.Show();
+        eventTextManager.OnClicked -= OnEndEventText;
+        eventTextManager.OnClicked += OnEndEventText;
+        if (!canGetItem)
+        {
+            eventTextManager.SetMessageText($"アイテムを獲得できなかった（所持品がいっぱいだ）\n"
+                                            + "<align=right>クリックで次へ</align>");
+        }
+        else
+        {
+            eventTextManager.SetMessageText($"{playerData.playerName}は{itemName}を獲得した\n"
+                                            + "<align=right>クリックで次へ</align>");
+        }
+
+    }
+
     void OnEndEventText()
     {
         eventTextManager.OnClicked -= OnEndEventText;
         eventTextManager.Hide();
         OnTileEventFinished();
-
     }
 
     /// <summary>
