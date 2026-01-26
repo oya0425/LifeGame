@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 public class PlayerStatusView : MonoBehaviour
 {
     [Tooltip("薄暗い背景")]
@@ -26,6 +27,14 @@ public class PlayerStatusView : MonoBehaviour
     [Tooltip("現在表示しているプレイヤーデータ")]
     PlayerData currentPlayerData;
 
+    [Tooltip("アイテムデフォルト画像")]
+    [SerializeField] Sprite defultImg;
+
+    [Tooltip("所持アイテム画像")]
+    [SerializeField]
+    Image[] itemImg;
+    int itemMax = 3;
+
     [Tooltip("表示内容をセットする")]
     public void SetPlayer(PlayerData playerData)
     {
@@ -42,6 +51,19 @@ public class PlayerStatusView : MonoBehaviour
         SetMoney(currentPlayerData.money);
         SetName(currentPlayerData.playerName);
         SetTargetMoney(currentPlayerData.targetMoney);
+
+        // まず全スロットをデフォルトに戻す
+        for (int i = 0; i < itemMax; i++)
+        {
+            itemImg[i].sprite = defultImg;
+        }
+
+        // 所持アイテム分だけ上書き
+        for (int i = 0; i < currentPlayerData.itemList.Count && i < itemMax; i++)
+        {
+            itemImg[i].sprite = currentPlayerData.itemList[i].itemImage;
+        }
+
     }
 
     [Tooltip("プレイヤーカラー反映")]
@@ -59,6 +81,22 @@ public class PlayerStatusView : MonoBehaviour
     void SetName(string name)
     {
         playerNameText.text = name;
+    }
+
+    void SetItemImg(Sprite[] sprite)
+    {
+        for (int i = 0; i < sprite.Length; i++)
+        { 
+            itemImg[i].sprite = sprite[i];
+        }
+        for(int i = 0;i < itemMax; i++)
+        {
+            if (itemImg[i] == null || itemImg[i].sprite==defultImg)
+            {
+                itemImg[i].sprite=defultImg;
+            }
+
+        }
     }
     public void ChangeSetMoney(int money)
     {

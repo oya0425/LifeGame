@@ -819,6 +819,10 @@ public class GameManager : MonoBehaviour
 
         itemUIController.SetChoices(playerData, descriptions);
     }
+
+    /// <summary>
+    /// どのボタンを押したか（どのアイテムを使用したか） 
+    /// </summary>
     private void OnItemSelected(int index)
     {
         // 仮：使用ログ
@@ -829,6 +833,8 @@ public class GameManager : MonoBehaviour
         playerData.itemList.RemoveAt(index);
         itemUIController.ClearDescription();
         HideItemUI();
+        playerStatusUI.SetPlayer(playerData);
+
         ChangeMode(MODE.SelectAction);
     }
 
@@ -904,6 +910,7 @@ public class GameManager : MonoBehaviour
         {
             case TileData.eTileType.NORMAL:
                 delta = calculator.CalcMoneyDelta(tile);
+
                 playerData.money += delta;
 
                 tile.DebugLog();
@@ -1014,6 +1021,8 @@ public class GameManager : MonoBehaviour
         {
             eventTextManager.SetMessageText($"{playerData.playerName}は{itemName}を獲得した\n"
                                             + "<align=right>クリックで次へ</align>");
+            playerStatusUI.SetPlayer(playerData);
+
         }
 
     }
