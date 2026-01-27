@@ -2,8 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using UnityEditor;
-public class EventUIController : MonoBehaviour
+public class EventUIController : TextBoxBase
 {
     [Header("Window")]
     [SerializeField] GameObject eventWindow;
@@ -80,6 +79,7 @@ public class EventUIController : MonoBehaviour
     {
         //eventText.text = $"{text}\n" + "<align=right>クリックで次へ</align>";
         eventText.text = text;
+        ShowNextArrow();
     }
 
     public void SetEventNameText(string text)
@@ -97,6 +97,9 @@ public class EventUIController : MonoBehaviour
 
         choiceAButton.gameObject.SetActive(true);
         choiceBButton.gameObject.SetActive(true);
+        
+        //選択肢が出たときにクリック状態を消す（逆△）
+        HideNextArrow();
     }
 
     /// <summary>
@@ -106,6 +109,7 @@ public class EventUIController : MonoBehaviour
     {
         choiceAButton.gameObject.SetActive(false);
         choiceBButton.gameObject.SetActive(false);
+        ShowNextArrow();
     }
 
     /// <summary>

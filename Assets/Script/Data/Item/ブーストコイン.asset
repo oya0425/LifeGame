@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: "\u30D6\u30FC\u30B9\u30C8\u30B3\u30A4\u30F3"
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: "\u30D6\u30FC\u30B9\u30C8\u30B3\u30A4\u30F3"
-  itemImage: {fileID: 21300000, guid: 6346999907369624e85b44eee1442a45, type: 3}
+  itemImage: {fileID: 21300000, guid: c910e4b96f7c3874e93c2259b1fb26ed, type: 3}
   itemDescription: "\u4ECA\u56DE\u306E\u5F97\u308B\u91D1\u984D\u306E\u7D50\u679C\u304C
-    1.5\u500D \u306B\u306A\u308B\u3002\n\u203B\u30E9\u30C3\u30AD\u30FC\u30DE\u30B9\u3067\u306F\u4F55\u3082\u8D77\u304D\u306A\u3044"
-  itemMultiplier: 1.5
+    1.5\u500D \u306B\u306A\u308B\u3002\n\u203B\u30E9\u30C3\u30AD\u30FC\u30DE\u30B9\u3067\u306F\u4F55\u3082\u8D77\u304D\u306A\u3044\n\u203B\u30DE\u30A4\u30CA\u30B9\u306B\u3082\u9069\u7528"
+  multiplierRange: {x: 1.5, y: 1.5}
+  effectTiming: 0

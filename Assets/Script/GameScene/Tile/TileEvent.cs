@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 
 public class TileEvent
 {
     System.Action onFinished;
+
+    System.Action<int> onFinishedWithDelta;
     [Tooltip("マウスがクリックされたかどうか?")]
     bool isWaiting;
 
@@ -23,15 +26,20 @@ public class TileEvent
 
         //UIからの通知を登録
         // UI → TileEvent への通知
+        Debug.Log($"TileEvent NEW : {GetHashCode()}");
+        eventUI.OnTextClicked -= OnTextClicked;
+        eventUI.OnChoiceASelected -= OnChoiceASelected;
+        eventUI.OnChoiceBSelected -= OnChoiceBSelected;
         eventUI.OnTextClicked += OnTextClicked;
         eventUI.OnChoiceASelected += OnChoiceASelected;
         eventUI.OnChoiceBSelected += OnChoiceBSelected;
 
     }
 
-    public void Execute(TileData tile, System.Action onFinished)
+    public void Execute(TileData tile, System.Action<int> onFinished)
     {
-        this.onFinished = onFinished;
+        this.onFinishedWithDelta = onFinished;
+        
         currentEvent = EventDatabase.instance.GetRandomEvent();
 
         textIndex = 0;
@@ -153,11 +161,13 @@ public class TileEvent
     /// </summary>
     void EndEvent()
     {
+        Debug.Log($"TileEvent END : {GetHashCode()}");
         eventUI.OnTextClicked -= OnTextClicked;
         eventUI.OnChoiceASelected -= OnChoiceASelected;
         eventUI.OnChoiceBSelected -= OnChoiceBSelected;
         eventUI.HideAll();
         onFinished?.Invoke();
+        onFinishedWithDelta?.Invoke(moneyDelta);
     }
 
     public int GetMoneyDelta()

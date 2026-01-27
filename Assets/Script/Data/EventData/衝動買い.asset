@@ -20,7 +20,7 @@ MonoBehaviour:
   choiceBText: "\u6211\u6162\u3059\u308B"
   resultAText: "\u6E80\u8DB3\u3057\u305F\u304C\u3001\u8CA1\u5E03\u306F\u8EFD\u304F\u306A\u3063\u305F\u3002"
   resultBText: "\u8CB7\u308F\u305A\u306B\u6E08\u3093\u3060\u3002\u5C11\u3057\u5F8C\u6094\u3082\u3042\u308B\u3002"
-  choiceAMinMoney: -5000
+  choiceAMinMoney: -4000
   choiceAMaxMoney: -3000
   choiceBMinMoney: -100
   choiceBMaxMoney: 0

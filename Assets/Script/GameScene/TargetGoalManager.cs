@@ -4,6 +4,7 @@ using System.Collections;
 
 public class TargetGoalManager : MonoBehaviour
 {
+
     [SerializeField, Tooltip("目標う決定UI")]
     TargetSettingUIController targetUIController;
 
@@ -113,11 +114,11 @@ public class TargetGoalManager : MonoBehaviour
             targetUIController.HideChoices();
 
             // --- 結果メッセージ表示 ---
-            targetUIController.SetMessage(
+            targetUIController.SetMessageClick(
                 $"({selected.title})\n<color=#{colorCode}>{playerData.playerName}</color> の目標金額は {moneyText} です。\n" +
                 "<align=right>クリックで次へ</align>"
             );
-
+            
 
             playerData.targetGoalData = selected;
             playerData.targetMoney = targetMoney;

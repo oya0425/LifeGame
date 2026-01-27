@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LuckyUIController : MonoBehaviour
+public class LuckyUIController : TextBoxBase
 {
     [SerializeField] GameObject window;
     [SerializeField, Tooltip("獲得したアイテムの画像")]
@@ -39,6 +39,8 @@ public class LuckyUIController : MonoBehaviour
     public void Hide()
     {
         window.SetActive(false);
+        HideNextArrow();
+
     }
 
 
@@ -56,7 +58,9 @@ public class LuckyUIController : MonoBehaviour
     public void SetResultText(string itemName)
     {
         resultText.text = $"{itemName}をもらった。\n"
-            + "<align=right>クリックで次へ</align>";
+           /* + "<align=right>クリックで次へ</align>"*/;
+        ShowNextArrow();
+
     }
 
     public void SetItemImage(Sprite itemImg)

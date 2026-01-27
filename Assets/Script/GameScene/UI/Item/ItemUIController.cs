@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+//アイテム選択画面
 
 public class ItemUIController : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class ItemUIController : MonoBehaviour
     [Tooltip("アイテムの説明文"), SerializeField]
     TextMeshProUGUI messageText;
 
-    [Tooltip("選択肢が押された通知")]
+    [Tooltip("")]
     public Action<int> OnChoiceSelected;
 
 

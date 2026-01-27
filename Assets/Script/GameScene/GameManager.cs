@@ -61,7 +61,6 @@ public class GameManager : MonoBehaviour
     [SerializeField,Header("フレームコントローラー")]
     public FrameColorController frameColorController;
 
-
     // --- 目標決定の変数 ---
     [SerializeField, Tooltip("目標のデータ所持")]
     TargetGoalManager targetGoalManager;
@@ -113,6 +112,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]private ItemUIController itemUIController;
 
     [SerializeField]private SelectActionViewUI selectActionViewUI;
+    [SerializeField,Tooltip("今に発動するアイテム")]ItemData currentItem;
+    [SerializeField,Tooltip("次のターンに使われるアイテム")]ItemData nextItem;      // 次ターン用に予約
 
     // --------------------------
 
@@ -134,7 +135,7 @@ public class GameManager : MonoBehaviour
     bool isEndEvent = false;
     [SerializeField] 
     EventUIController eventUIController;
-    TileEvent tileEvent;
+    //TileEvent tileEvent;
 
     int currentMoney;
 
@@ -175,6 +176,7 @@ public class GameManager : MonoBehaviour
     {
         // --- 初期化 ---
         diceView.SetActive(false);
+
         HideBackButton();
         HideSelectActionView();
 
@@ -186,11 +188,11 @@ public class GameManager : MonoBehaviour
         eventTextManager.Hide();
         frameColorController.SetColor(Color.white);
 
-        tileEvent = new TileEvent(eventUIController);
+        //tileEvent = new TileEvent(eventUIController);
         tileLucky = new TileLucky(luckyUIController);
         currentMoney = 0;
         isItem = true;
-
+        currentItem = null;
         // --------------
 
 
@@ -706,6 +708,7 @@ public class GameManager : MonoBehaviour
     {
         actionType= action;
 
+
         switch (actionType)
         {
             case eActionType.Roulette:
@@ -827,6 +830,8 @@ public class GameManager : MonoBehaviour
     {
         // 仮：使用ログ
         Debug.Log("Item Used : " + index);
+        UseItem(playerData.itemList[(int)index]);
+        
         isItem = false;
         selectActionViewUI.SetItemButtonInteractable(isItem);
 
@@ -837,7 +842,17 @@ public class GameManager : MonoBehaviour
 
         ChangeMode(MODE.SelectAction);
     }
-
+    public void UseItem(ItemData item)
+    {
+        if (item.effectTiming == ItemData.ItemEffectTiming.NowTurn)
+        {
+            currentItem = item;   // 今ターンに効かせる
+        }
+        else // NextTurn
+        {
+            nextItem = item;      // 次ターンに回す
+        }
+    }
     private void HideItemUI()
     {
         itemUIController.Hide();
@@ -909,20 +924,26 @@ public class GameManager : MonoBehaviour
         switch (tile.tileType)
         {
             case TileData.eTileType.NORMAL:
-                delta = calculator.CalcMoneyDelta(tile);
+                int baseDeltaPlus = calculator.CalcMoneyDelta(tile);
+                int finalDeltaPlus = baseDeltaPlus;
 
-                playerData.money += delta;
+                // アイテム補正（今ターン有効）
+                if (currentItem != null)
+                {
+                    finalDeltaPlus = Mathf.RoundToInt(baseDeltaPlus * currentItem.GetRandomMultiplier());
+                }
+
+                playerData.money += finalDeltaPlus;
 
                 tile.DebugLog();
-                OnEventText(currentMoney, playerData.money, delta);
-
+                OnEventText(currentMoney, playerData.money, baseDeltaPlus, finalDeltaPlus);
 
                 break;
             case TileData.eTileType.START:
                 tile.DebugLog();
                 break;
             case TileData.eTileType.EVENT:
-
+                var tileEvent = new TileEvent(eventUIController);
                 //tileEvent.Execute(tile, OnTileEventFinished);
                 tileEvent.Execute(tile, OnEventFinished);
 
@@ -936,10 +957,19 @@ public class GameManager : MonoBehaviour
 
                 break;
             case TileData.eTileType.MINUS:
-                delta = calculator.CalcMoneyDelta(tile);
-                playerData.money -= delta;
-                OnEventText(currentMoney,playerData.money,delta);
+                int baseDeltaMinus = calculator.CalcMoneyDelta(tile);
+                int finalDeltaMinau = baseDeltaMinus;
 
+                // アイテム補正（今ターン有効）
+                if (currentItem != null)
+                {
+                    finalDeltaMinau = Mathf.RoundToInt(baseDeltaMinus * currentItem.GetRandomMultiplier());
+                }
+
+                playerData.money -= finalDeltaMinau;
+
+                tile.DebugLog();
+                OnEventText(currentMoney, playerData.money, baseDeltaMinus, finalDeltaMinau);
                 tile.DebugLog();
                 break;
             case TileData.eTileType.BRANCH:
@@ -956,43 +986,63 @@ public class GameManager : MonoBehaviour
 
 
     }
-    void OnEventFinished()
+    void OnEventFinished(int baseDelta)
     {
-        int delta = tileEvent.GetMoneyDelta();
-        playerData.money += delta;
+        int finalDelta = baseDelta;
 
-        OnEventText(currentMoney, playerData.money, delta);
+        if (currentItem != null)
+        {
+            finalDelta = Mathf.RoundToInt(baseDelta * currentItem.GetRandomMultiplier());
+        }
+        playerData.money += finalDelta;
+
+        OnEventText(currentMoney, playerData.money, baseDelta, finalDelta);
     }
 
     /// <summary>
     /// お金の増減のテキスト表示 </summary>
-    void OnEventText(int currentMoney,int newMoney,int delta)
+    void OnEventText(int currentMoney, int newMoney, int baseDelta, int finalDelta/*,float itemMultiplier*/)
     {
         eventTextManager.Show();
         eventTextManager.OnClicked -= OnEndEventText;
         eventTextManager.OnClicked += OnEndEventText;
-        if (delta == 0)
-        {
-            eventTextManager.SetMessageText($"何も起きなかった\n"
-                                    + "<align=right>クリックで次へ</align>");
-            playerStatusUI.ChangeSetMoney(playerData.money);
 
-        }
-        else if (currentMoney < newMoney)
-        {
-            eventTextManager.SetMessageText($"{MyUtility.FormatEventMoneyManEn(delta)}もらった!\n"
-                                                + "<align=right>クリックで次へ</align>");
-            playerStatusUI.ChangeSetMoney(playerData.money);
+        bool isItemEffected = baseDelta != finalDelta;
+        bool isIncrease = finalDelta > 0;
 
+        if (finalDelta == 0)
+        {
+            eventTextManager.SetMessageText(
+                "何も起きなかった\n"/*+ "<align=right>クリックで次へ</align>"*/);
         }
         else
         {
-            eventTextManager.SetMessageText($"{MyUtility.FormatEventMoneyManEn(delta)}失った...\n"
-                                                + "<align=right>クリックで次へ</align>");
-            playerStatusUI.ChangeSetMoney(playerData.money);
+            string deltaText;
 
+            if (isItemEffected)
+            {
+                deltaText =
+                    $"{MyUtility.FormatEventMoneyManEn(baseDelta)} → " +
+                    $"{MyUtility.FormatEventMoneyManEn(finalDelta)}（アイテム効果）";
+            }
+            else
+            {
+                deltaText = MyUtility.FormatEventMoneyManEn(finalDelta);
+            }
+
+            if (isIncrease)
+            {
+                eventTextManager.SetMessageText(
+                    $"{deltaText}もらった!\n"/*+ "<align=right>クリックで次へ</align>"*/);
+            }
+            else
+            {
+                eventTextManager.SetMessageText(
+                    $"{deltaText}失った...\n"/*+ "<align=right>クリックで次へ</align>"*/);
+            }
         }
 
+        playerStatusUI.ChangeSetMoney(playerData.money);
     }
 
     void OnLuckyEnd()
@@ -1012,15 +1062,16 @@ public class GameManager : MonoBehaviour
         eventTextManager.Show();
         eventTextManager.OnClicked -= OnEndEventText;
         eventTextManager.OnClicked += OnEndEventText;
+
         if (!canGetItem)
         {
             eventTextManager.SetMessageText($"アイテムを獲得できなかった（所持品がいっぱいだ）\n"
-                                            + "<align=right>クリックで次へ</align>");
+                                            /*+ "<align=right>クリックで次へ</align>"*/);
         }
         else
         {
             eventTextManager.SetMessageText($"{playerData.playerName}は{itemName}を獲得した\n"
-                                            + "<align=right>クリックで次へ</align>");
+                                            /*+ "<align=right>クリックで次へ</align>"*/);
             playerStatusUI.SetPlayer(playerData);
 
         }
@@ -1029,6 +1080,7 @@ public class GameManager : MonoBehaviour
 
     void OnEndEventText()
     {
+
         eventTextManager.OnClicked -= OnEndEventText;
         eventTextManager.Hide();
         OnTileEventFinished();
@@ -1085,6 +1137,19 @@ public class GameManager : MonoBehaviour
         playerStatusUI.SetPlayer(playerData);
         playerStatusUI.Show();
         frameColorController.SetColor(playerData.playerColor);
+        if (currentItem != null) currentItem = null;
+        // ターン開始時（EndTurn 後）
+        // 次ターン予約があれば昇格
+        if (nextItem != null)
+        {
+            currentItem = nextItem;
+            nextItem = null;
+        }
+        // 誰かのアイテム効果が乗っているなら、さらにアイテムは使えない
+        if (currentItem != null)
+        {
+            isItem = false;
+        }
 
         ChangeMode(MODE.SelectAction);
     }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class TargetSettingUIController : MonoBehaviour
+public class TargetSettingUIController : TextBoxBase
 {
     [SerializeField] GameObject window;
     [SerializeField] TextMeshProUGUI messageText;
@@ -44,6 +44,8 @@ public class TargetSettingUIController : MonoBehaviour
     public void Hide()
     {
         window.SetActive(false);
+        HideNextArrow();
+
     }
 
     public void HideChoices()
@@ -65,7 +67,20 @@ public class TargetSettingUIController : MonoBehaviour
         {
             messageText.text = text;
         }
+        HideNextArrow();
+
     }
+    public void SetMessageClick(string text)
+    {
+        defaultMessage = text;
+
+        if (!isHovering)
+        {
+            messageText.text = text;
+        }
+        ShowNextArrow();
+    }
+
 
     /// <summary>
     /// 選択肢タイトル＋説明文を同時に設定

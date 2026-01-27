@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using System;
 
-public class EventTextManager : MonoBehaviour
+public class EventTextManager : TextBoxBase
 {
     [SerializeField, Header("UI全体の親")] GameObject window;
     [SerializeField,Header("メッセージテキスト")] TextMeshProUGUI messageText;
@@ -17,11 +17,13 @@ public class EventTextManager : MonoBehaviour
     public void Hide()
     {
         window.SetActive(false);
+        HideNextArrow();
     }
 
     public void SetMessageText(string text)
     {
         messageText.text = text;
+        ShowNextArrow();
     }
 
     // UI の Button / EventTrigger から呼ぶ
