@@ -20,6 +20,10 @@ public class ItemUIController : MonoBehaviour
     [Tooltip("アイテムの説明文"), SerializeField]
     TextMeshProUGUI messageText;
 
+    [Tooltip("アイテムnoの名前"), SerializeField]
+    TextMeshProUGUI[] itemNameText;
+
+
     [Tooltip("")]
     public Action<int> OnChoiceSelected;
 
@@ -88,6 +92,7 @@ public class ItemUIController : MonoBehaviour
             {
                 imgItem[i].gameObject.SetActive(true);
                 imgItem[i].sprite = playerData.itemList[i].itemImage;
+                itemNameText[i].text=playerData.itemList[i].itemName;
             }
             else
             {
