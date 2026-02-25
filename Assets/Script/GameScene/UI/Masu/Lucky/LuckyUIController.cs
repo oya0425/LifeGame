@@ -1,12 +1,17 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System.Collections;
 public class LuckyUIController : TextBoxBase
 {
     [SerializeField] GameObject window;
+
+    [SerializeField] CanvasGroup canvasGroup;
+
     [SerializeField, Tooltip("獲得したアイテムの画像")]
     Image imgItem;
+
+
 
     [SerializeField, Tooltip("アイテム説明テキスト")]
     TextMeshProUGUI itemDiscriptionText;
@@ -20,6 +25,8 @@ public class LuckyUIController : TextBoxBase
 
     private void Start()
     {
+        if (canvasGroup == null) canvasGroup = window.GetComponent<CanvasGroup>();
+
         itemDiscriptionText.text = "";
         resultText.text = "";
         imgItem.enabled = false;
@@ -31,6 +38,7 @@ public class LuckyUIController : TextBoxBase
     /// </summary>
     public void Show()
     {
+        canvasGroup.alpha = 1f;
         window.SetActive(true);
     }
     /// <summary>
@@ -43,6 +51,30 @@ public class LuckyUIController : TextBoxBase
 
     }
 
+    /// <summary>
+    /// 全体をまとめてフェードアウトさせる
+    /// </summary>
+    public void FadeOut(System.Action onComplete)
+    {
+        StartCoroutine(FadeOutRoutine(onComplete));
+    }
+
+    // --- 画像全体を薄くして消す ---
+    private IEnumerator FadeOutRoutine(System.Action onComplete)
+    {
+        float duration = 0.5f; // 消えるまでの秒数
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            yield return null;
+        }
+
+        Hide(); // 完全に消えたら非アクティブ化
+        onComplete?.Invoke();
+    }
 
     /// <summary>
     /// 説明文をセット 

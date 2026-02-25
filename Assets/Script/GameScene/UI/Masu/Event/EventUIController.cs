@@ -2,10 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections;
 public class EventUIController : TextBoxBase
 {
     [Header("Window")]
     [SerializeField] GameObject eventWindow;
+    [SerializeField] CanvasGroup canvasGroup;
 
     [Header("Text")]
     [SerializeField] TextMeshProUGUI eventText;
@@ -40,6 +42,9 @@ public class EventUIController : TextBoxBase
 
     void Start()
     {
+        // CanvasGroupの自動取得
+        if (canvasGroup == null) canvasGroup = eventWindow.GetComponent<CanvasGroup>();
+
         // 初期状態はすべて非表示
         HideAll();
 
@@ -55,10 +60,41 @@ public class EventUIController : TextBoxBase
         });
     }
 
+
+    // --- フェードアウト機能 ---
+
+    /// <summary>
+    /// UI全体をゆっくり消す
+    /// </summary>
+    public void FadeOut(Action onComplete)
+    {
+        // 二重でコルーチンが走らないよう、念のため止めてから開始
+        StopAllCoroutines();
+        StartCoroutine(FadeOutRoutine(onComplete));
+    }
+
+    private IEnumerator FadeOutRoutine(Action onComplete)
+    {
+        float duration = 0.5f; // 消える時間
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            yield return null;
+        }
+
+        canvasGroup.alpha = 0f;
+        HideAll(); // 完全に消えたら非アクティブ化
+        onComplete?.Invoke();
+    }
+
     /// <summary>
     /// イベントUI全体を表示 </summary>
     public void ShowWindow()
     {
+        canvasGroup.alpha = 1f;
         eventWindow.SetActive(true);
     }
 

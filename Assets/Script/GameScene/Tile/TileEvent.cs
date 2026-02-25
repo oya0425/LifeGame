@@ -165,8 +165,11 @@ public class TileEvent
         eventUI.OnTextClicked -= OnTextClicked;
         eventUI.OnChoiceASelected -= OnChoiceASelected;
         eventUI.OnChoiceBSelected -= OnChoiceBSelected;
-        eventUI.HideAll();
-        onFinished?.Invoke();
+        //eventUI.HideAll();
+        eventUI.FadeOut(() => {
+            onFinished?.Invoke();
+        });
+        //onFinished?.Invoke();
         onFinishedWithDelta?.Invoke(moneyDelta);
     }
 
