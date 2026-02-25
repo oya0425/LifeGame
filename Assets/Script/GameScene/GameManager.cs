@@ -985,7 +985,7 @@ public class GameManager : MonoBehaviour
                 playerData.money -= finalDeltaMinau;
 
                 tile.DebugLog();
-                OnEventText(currentMoney, playerData.money, baseDeltaMinus, finalDeltaMinau);
+                OnEventText(currentMoney, playerData.money, -baseDeltaMinus, -finalDeltaMinau);
                 tile.DebugLog();
                 break;
             case TileData.eTileType.BRANCH:
@@ -1056,6 +1056,7 @@ public class GameManager : MonoBehaviour
                 eventTextManager.SetMessageText(
                     $"{deltaText}失った...\n"/*+ "<align=right>クリックで次へ</align>"*/);
             }
+
         }
 
         playerStatusUI.ChangeSetMoney(playerData.money);

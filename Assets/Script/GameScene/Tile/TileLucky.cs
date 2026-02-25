@@ -7,6 +7,8 @@ public class TileLucky
     LuckyUIController luckyUI;
     ItemData currentItem;
 
+
+
     bool isShowing;
 
     public TileLucky(LuckyUIController ui)
@@ -43,8 +45,11 @@ public class TileLucky
     void EndEvent()
     {
         isShowing = false;
-        luckyUI.Hide();
-        OnFinished?.Invoke();
+        //luckyUI.Hide();
+        luckyUI.FadeOut(() => {
+            OnFinished?.Invoke();
+        });
+
     }
     public ItemData GetItem()
     {
