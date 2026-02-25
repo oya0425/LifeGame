@@ -152,6 +152,10 @@ public class GameManager : MonoBehaviour
     // ------------------------------
 
 
+    // --- イベントマスとラッキーマスに入るときの演出 ---
+    [SerializeField]MapEventEffect mapEventEffect;
+
+
 
     // --- リザルト処理の変数 ---
     [SerializeField] ResultManager resultManager;
@@ -911,10 +915,10 @@ public class GameManager : MonoBehaviour
         PlayerData playerData = TurnManager.instance.GetCurrentPlayerData();
         diceView.SetActive(false);
 
-        ProcessTileEvent(tile, playerData);
+        StartCoroutine(ProcessTileEvent(tile, playerData));
     }
 
-    void ProcessTileEvent(TileData tile, PlayerData playerData)
+    IEnumerator ProcessTileEvent(TileData tile, PlayerData playerData)
     {
         TileMoneyCalculator calculator = new TileMoneyCalculator();
         int delta = 0;
@@ -943,15 +947,27 @@ public class GameManager : MonoBehaviour
                 tile.DebugLog();
                 break;
             case TileData.eTileType.EVENT:
-                var tileEvent = new TileEvent(eventUIController);
-                //tileEvent.Execute(tile, OnTileEventFinished);
-                tileEvent.Execute(tile, OnEventFinished);
+                //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));
+                //mapEventEffect.Hide();
+                yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile, () => {
+                    // ここに演出が消え始めた時にやってほしいことを書く
+                    var tileEvent = new TileEvent(eventUIController);
+                    tileEvent.Execute(tile, OnEventFinished);
+                }));
+
+                //var tileEvent = new TileEvent(eventUIController);
+                ////tileEvent.Execute(tile, OnTileEventFinished);
+                //tileEvent.Execute(tile, OnEventFinished);
 
                 tile.DebugLog();
 
                 break;
             case TileData.eTileType.LUCKY:
-                tileLucky.Execute(tile, OnLuckyEnd);
+                //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));
+                yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile, () => {
+                    tileLucky.Execute(tile, OnLuckyEnd);
+                }));
+                //tileLucky.Execute(tile, OnLuckyEnd);
 
                 tile.DebugLog();
 
