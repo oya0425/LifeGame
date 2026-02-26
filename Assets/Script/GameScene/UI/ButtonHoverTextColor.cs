@@ -46,9 +46,18 @@ public class ButtonHoverTextColor : MonoBehaviour,
 
     private void SetState(bool hovered)
     {
+
+       if(hovered && !isHovered)
+        {
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySE("CursorSE");
+            }
+        }
         isHovered = hovered;
         if (targetText != null)
             targetText.color = hovered ? hoverColor : normalColor;
+
     }
 
     // --- イベントハンドラ ---

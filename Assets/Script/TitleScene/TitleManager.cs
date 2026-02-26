@@ -95,6 +95,8 @@ public class TitleManager : MonoBehaviour
     public static List<Color> playerColor = new List<Color>();
 
 
+
+
     private void Awake()
     {
         instance = this;
@@ -114,6 +116,11 @@ public class TitleManager : MonoBehaviour
 
         allTurn = MIN_TURN;
         allTurnText.text = $"É^Å[Éìêî:{allTurn}";
+
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlayBGM("TitleBGM");
+        }
 
     }
 
@@ -208,7 +215,7 @@ public class TitleManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         SceneManager.LoadScene("GameScene");
-        
+        AudioManager.instance.StopBGM();
 
     }
 
