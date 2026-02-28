@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.UIElements;
 
 public class TargetGoalManager : MonoBehaviour
 {
@@ -23,6 +24,11 @@ public class TargetGoalManager : MonoBehaviour
 
     [Tooltip("結果表示後、クリック待ち")]
     bool isWaitingForConfirm;
+
+    // --- 音 ---
+    [SerializeField] private AudioManager audioManager;
+
+
 
     private void Start()
     {
@@ -130,6 +136,11 @@ public class TargetGoalManager : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
+                    if (audioManager != null)
+                    {
+                        audioManager.PlaySE("DecisionSE"); // 決定音の名前
+                    }
+
                     isWaitingForConfirm = false;
                 }
                 yield return null;
@@ -164,7 +175,6 @@ public class TargetGoalManager : MonoBehaviour
     /// </summary>
     public TargetGoalData GetRandomGoal()
     {
-
 
         if (targetGoalsDatas == null || targetGoalsDatas.Length == 0)
         {

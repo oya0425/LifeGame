@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager instance;
     public AudioSource seSource;
     public AudioSource bgmSource;
     public SoundDatabase db; // ここにDatabaseアセットをセット
 
-    void Awake() { if (instance == null) instance = this; }
+    void Awake() { 
+    }
 
     public void PlaySE(string name)
     {

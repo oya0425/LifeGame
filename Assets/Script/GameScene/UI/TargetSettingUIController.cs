@@ -18,6 +18,8 @@ public class TargetSettingUIController : TextBoxBase
     string[] currentDescriptions;//à–¾•¶‚ðã‘‚«‚Å‚Í‚È‚­AÅ‰‚É“o˜^‚µ‚½‚à‚Ì‚ð‘I‘ð‚µ‚Ä•\Ž¦‚·‚é
     bool isHovering;
 
+    [SerializeField] private AudioManager audioManager;
+
     private void Start()
     {
         Hide();
@@ -28,6 +30,10 @@ public class TargetSettingUIController : TextBoxBase
             int index = i;
             choiceButtons[i].onClick.AddListener(() =>
             {
+                if (audioManager != null)
+                {
+                    audioManager.PlaySE("MouseClickSE"); // Œˆ’è‰¹‚Ì–¼‘O
+                }
                 OnChoiceSelected?.Invoke(index);
             });
         }

@@ -10,7 +10,9 @@ public class ScreenTransition : MonoBehaviour
     [SerializeField] private RectTransform blackImage;
     [SerializeField] float expandDuration = 0.5f;
     [SerializeField] float shrinkDuration = 1.0f;
-    
+
+    [SerializeField] private AudioManager audioManager;
+
     private void Awake()
     {
         instance = this;
@@ -21,10 +23,13 @@ public class ScreenTransition : MonoBehaviour
     /// èkè¨ÇæÇØ </summary>
     public IEnumerator PlayShrink()
     {
+
         blackImage.gameObject.SetActive(true);
         blackImage.localScale=Vector3.one;
 
         yield return new WaitForSeconds(0.5f);
+        audioManager.PlaySE("SceneChangeSE");
+
         yield return Scale(Vector3.one, Vector3.zero, shrinkDuration);
         blackImage.gameObject.SetActive(false);
     }
@@ -35,7 +40,6 @@ public class ScreenTransition : MonoBehaviour
     { 
         blackImage.gameObject.SetActive(true);
         blackImage.localScale = Vector3.one;
-
         yield return Scale(Vector3.zero, Vector3.one, expandDuration);
     }
 
@@ -53,5 +57,6 @@ public class ScreenTransition : MonoBehaviour
             yield return null;
         }
         blackImage.localScale = Vector3.one * 0.001f;
+
     }
 }

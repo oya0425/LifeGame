@@ -18,6 +18,11 @@ public class LuckyUIController : TextBoxBase
     [SerializeField, Tooltip("～をもらったテキスト")]
     TextMeshProUGUI resultText;
 
+    // --- 音 ---
+    [SerializeField] private AudioManager audioManager;
+
+
+
     /// <summary>
     /// テキスト枠がクリックされた通知
     /// </summary>
@@ -106,7 +111,7 @@ public class LuckyUIController : TextBoxBase
     /// </summary>
     public void OnTextAreaClicked()
     {
-        Debug.Log("テキストクリック通った");
+        audioManager.PlaySE("MouseClickSE");
         OnTextClicked?.Invoke();
     }
 

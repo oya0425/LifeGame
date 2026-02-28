@@ -1,6 +1,7 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
+using UnityEngine.UI;
 
 public class ButtonHoverTextColor : MonoBehaviour,
     IPointerEnterHandler,
@@ -23,11 +24,20 @@ public class ButtonHoverTextColor : MonoBehaviour,
     private float currentScale = 1.0f; // 現在のスケール値
     private Vector3 initialScale;
 
+    private Selectable selectable;// Buttonなどのコンポーネント保持用
+
+    [SerializeField] private AudioManager audioManager;
+
+
     private void Awake()
     {
         if (targetImageRect != null)
             initialScale = targetImageRect.localScale;
+        // 同じオブジェクトにあるButtonやToggleなどのコンポーネントを取得
+        selectable = GetComponent<Selectable>();
     }
+    // インタラクティブ（有効）かどうかを判定するプロパティ
+    private bool IsInteractable => selectable == null || selectable.interactable;
 
     private void Update()
     {
@@ -46,12 +56,17 @@ public class ButtonHoverTextColor : MonoBehaviour,
 
     private void SetState(bool hovered)
     {
-
-       if(hovered && !isHovered)
+        if (!IsInteractable)
         {
-            if (AudioManager.instance != null)
+            isHovered = false;
+            UpdateVisuals(false);
+            return;
+        }
+        if (hovered && !isHovered)
+        {
+            if (audioManager != null)
             {
-                AudioManager.instance.PlaySE("CursorSE");
+                audioManager.PlaySE("CursorSE");
             }
         }
         isHovered = hovered;
@@ -59,7 +74,15 @@ public class ButtonHoverTextColor : MonoBehaviour,
             targetText.color = hovered ? hoverColor : normalColor;
 
     }
+    private void UpdateVisuals(bool hovered)
+    {
+        if (targetText == null) return;
 
+        if (!IsInteractable)
+            targetText.color = normalColor;
+        else
+            targetText.color = hovered ? hoverColor : normalColor;
+    }
     // --- イベントハンドラ ---
     /// <summary>
     /// マウスが乗ったとき
@@ -85,6 +108,7 @@ public class ButtonHoverTextColor : MonoBehaviour,
         // クリックしたら選択解除して、状態をリセット（縮小させる）
         EventSystem.current.SetSelectedGameObject(null);
         SetState(false);
+
     }
 
     /// <summary>

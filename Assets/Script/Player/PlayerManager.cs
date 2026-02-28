@@ -32,6 +32,10 @@ public class PlayerManager : MonoBehaviour
     [Header("実体として生成されたプレイヤー")]
     public List<GameObject> playerObjects = new List<GameObject>();
 
+
+    [Header("オーディオマネージャー")]
+    [SerializeField] private AudioManager audioManager;
+
     private void Awake()
     {
         instance = this;
@@ -136,6 +140,7 @@ public class PlayerManager : MonoBehaviour
         {
             mover.tileParent = tileParent;
             mover.spinner = diceSpinner;
+            mover.Setup(audioManager);
 
             // カメラ登録
             if (cam != null) cam.players.Add(mover);

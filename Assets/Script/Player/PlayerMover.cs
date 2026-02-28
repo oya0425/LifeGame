@@ -42,11 +42,18 @@ public class PlayerMover : MonoBehaviour
     [SerializeField,Header("ゴールしたか？")] bool isReachedGoal = false;
 
 
+    [SerializeField] private AudioManager audioManager;
+
+
     TileData tile;
 
     private void Awake()
     {
         instance = this;
+    }
+    public void Setup(AudioManager manager)
+    {
+        this.audioManager = manager;
     }
 
     private void Start()
@@ -96,7 +103,6 @@ public class PlayerMover : MonoBehaviour
     {
 
         isMoving = true;
-
         // ===== マス移動 =====
         for (int i = 0; i < steps; i++)
         {
@@ -113,18 +119,35 @@ public class PlayerMover : MonoBehaviour
             Vector3 start = transform.position;
             Vector3 target = tiles[nextTileIndex].position;
             float elapsed = 0f;
+            bool hasPlayedSound = false;
 
             while (elapsed < moveTime)
             {
                 float t = elapsed / moveTime;
                 transform.position = Vector3.Lerp(start, target, t);
                 elapsed += Time.deltaTime;
+                if (!hasPlayedSound && t >= 0.5f)
+                {
+                    if (i == steps - 1)
+                    {
+                        //audioManager.PlaySE("MouseClickSE");
+                        audioManager.PlaySE("CuteWalkSE");
+
+                        //audioManager.PlaySE("ArrivalSE");
+                    }
+                    else
+                    {
+                        audioManager.PlaySE("CuteWalkSE");
+                    }
+                    
+
+                    hasPlayedSound = true;
+                }
                 yield return null;
             }
 
             transform.position = target;
             currentTileIndex = nextTileIndex;
-
         }
 
         // ===== ここから「同じマスの配置処理」 =====

@@ -94,7 +94,7 @@ public class TitleManager : MonoBehaviour
     /// <summary>選択したプレイヤーの色一覧（GameSceneでも参照する）</summary>
     public static List<Color> playerColor = new List<Color>();
 
-
+    [SerializeField] private AudioManager audioManager;
 
 
     private void Awake()
@@ -117,9 +117,9 @@ public class TitleManager : MonoBehaviour
         allTurn = MIN_TURN;
         allTurnText.text = $"ターン数:{allTurn}";
 
-        if (AudioManager.instance != null)
+        if (audioManager!= null)
         {
-            AudioManager.instance.PlayBGM("TitleBGM");
+            audioManager.PlayBGM("TitleBGM");
         }
 
     }
@@ -182,6 +182,8 @@ public class TitleManager : MonoBehaviour
 
             // 人数選択 → ゲーム開始
             case MODE.SELECTPLAYER:
+                audioManager.PlaySE("StartSE");
+
                 StartCoroutine(GameStartSeqience());
                 //SceneManager.LoadScene("DebugScene");
                 break;
@@ -211,11 +213,10 @@ public class TitleManager : MonoBehaviour
             gameStartText.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
             yield return null;
         }
-
         yield return new WaitForSeconds(0.1f);
 
         SceneManager.LoadScene("GameScene");
-        AudioManager.instance.StopBGM();
+        audioManager.StopBGM();
 
     }
 
@@ -225,6 +226,8 @@ public class TitleManager : MonoBehaviour
     public void PlayerPlusButton()
     {
         if (playerCount == PLAYERMAX) return;
+        
+        audioManager.PlaySE("DecisionSE");
 
         CreatePlayerFrame();
         UpdatePlayerButtonState();
@@ -237,6 +240,7 @@ public class TitleManager : MonoBehaviour
     public void PlayerMinusButton()
     {
         if (playerCount == PLAYERMIN) return;
+        audioManager.PlaySE("DecisionSE");
 
         Destroy(playerObjects[playerObjects.Count - 1]);
         playerObjects.RemoveAt(playerObjects.Count - 1);
@@ -290,6 +294,7 @@ public class TitleManager : MonoBehaviour
         {
             allTurn = MAX_TURN;
         }
+
         allTurnText.text = $"ターン数:{allTurn}";
         UpdateTurnButtonState();
     }
@@ -313,6 +318,8 @@ public class TitleManager : MonoBehaviour
     {
         turnPlusButton.interactable = (allTurn < MAX_TURN);
         turnMinusButton.interactable = (allTurn > MIN_TURN);
+        audioManager.PlaySE("DecisionSE");
+
     }
 
 

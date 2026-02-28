@@ -168,6 +168,10 @@ public class GameManager : MonoBehaviour
     // --------------------------
 
 
+    // --- 音 ---
+    [SerializeField]AudioManager audioManager;
+
+
     #region Unity Lifecycle
 
     private void Awake()
@@ -258,6 +262,9 @@ public class GameManager : MonoBehaviour
         switch (next)
         {
             case MODE.TargetGoalSetting:
+                audioManager.PlayBGM("ReadyBGM");
+
+
                 OnTargetGoalStart();
                 break;
 
@@ -267,6 +274,8 @@ public class GameManager : MonoBehaviour
 
                 break;
             case MODE.SelectAction:
+                audioManager.StopBGM();
+                audioManager.PlayBGM("PlayGameBGM");
                 selectActionViewUI.SetItemButtonInteractable(isItem);
                 ShowSelectActionView();
                 ShowBackButton();
@@ -286,6 +295,8 @@ public class GameManager : MonoBehaviour
                 OnItemStart();
                 break;
             case MODE.Event:
+                //audioManager.StopBGM();
+
                 OnEventStart();
                 break;
             case MODE.EndTurn:
@@ -928,6 +939,7 @@ public class GameManager : MonoBehaviour
         switch (tile.tileType)
         {
             case TileData.eTileType.NORMAL:
+
                 int baseDeltaPlus = calculator.CalcMoneyDelta(tile);
                 int finalDeltaPlus = baseDeltaPlus;
 
@@ -947,6 +959,10 @@ public class GameManager : MonoBehaviour
                 tile.DebugLog();
                 break;
             case TileData.eTileType.EVENT:
+                audioManager.StopBGM();
+
+                audioManager.PlayBGM("EventBGM");
+
                 //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));
                 //mapEventEffect.Hide();
                 yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile, () => {
@@ -963,6 +979,10 @@ public class GameManager : MonoBehaviour
 
                 break;
             case TileData.eTileType.LUCKY:
+                audioManager.StopBGM();
+                audioManager.PlayBGM("LuckyBGM");
+
+
                 //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));
                 yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile, () => {
                     tileLucky.Execute(tile, OnLuckyEnd);
@@ -1000,7 +1020,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-
+        
     }
     void OnEventFinished(int baseDelta)
     {

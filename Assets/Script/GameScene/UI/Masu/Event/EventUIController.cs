@@ -25,6 +25,11 @@ public class EventUIController : TextBoxBase
     [SerializeField] Image resultAImage;
     [SerializeField] Image resultBImage;
 
+
+    // --- 音 ---
+    [SerializeField] private AudioManager audioManager;
+
+
     /// <summary>
     /// テキスト枠がクリックされた通知
     /// </summary>
@@ -51,11 +56,15 @@ public class EventUIController : TextBoxBase
         // ボタン登録
         choiceAButton.onClick.AddListener(() =>
         {
+            audioManager.PlaySE("DecisionSE");
+
             OnChoiceASelected?.Invoke();
         });
 
         choiceBButton.onClick.AddListener(() =>
         {
+            audioManager.PlaySE("DecisionSE");
+
             OnChoiceBSelected?.Invoke();
         });
     }
@@ -153,7 +162,7 @@ public class EventUIController : TextBoxBase
     /// </summary>
     public void OnTextAreaClicked()
     {
-        Debug.Log("テキストクリック通った");
+        audioManager.PlaySE("MouseClickSE");
         OnTextClicked?.Invoke();
     }
 

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70733b62f2ab35d4ab67803a491fdf75, type: 3}
-  m_Name: "\u76EE\u6A19\u6C7A\u5B9ABGM"
+  m_Name: "\u30AD\u30E3\u30F3\u30BB\u30EB\u30DC\u30BF\u30F3SE"
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
-  soundName: 
-  clip: {fileID: 0}
+  soundName: CancelSE
+  clip: {fileID: 8300000, guid: 58da22e0f6e51814f824bb44afc16c56, type: 3}
   volume: 1
   loop: 1

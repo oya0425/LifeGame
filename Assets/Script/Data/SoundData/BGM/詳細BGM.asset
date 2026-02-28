@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70733b62f2ab35d4ab67803a491fdf75, type: 3}
   m_Name: "\u8A73\u7D30BGM"
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
-  soundName: 
-  clip: {fileID: 0}
-  volume: 1
+  soundName: DetailViewBGM
+  clip: {fileID: 8300000, guid: 6ddda5c2145bf364eaf12c265beedf9c, type: 3}
+  volume: 0.3
   loop: 1

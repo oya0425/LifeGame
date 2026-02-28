@@ -626,6 +626,7 @@ MonoBehaviour:
   hoverColor: {r: 0, g: 0, b: 0, a: 1}
   lerpSpeed: 0.2
   targetSize: 1.2
+  audioManager: {fileID: 1029830799}
 --- !u!1 &288249043
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,6 +697,7 @@ MonoBehaviour:
   selectPos_Button: {fileID: 1744429306}
   turnPlusButton: {fileID: 1189966320}
   turnMinusButton: {fileID: 2142080462}
+  audioManager: {fileID: 1029830799}
 --- !u!222 &288249047
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1024,6 +1026,7 @@ MonoBehaviour:
   hoverColor: {r: 0, g: 0, b: 0, a: 1}
   lerpSpeed: 0.2
   targetSize: 1.2
+  audioManager: {fileID: 1029830799}
 --- !u!1 &625291198
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,6 +1058,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundDatabase
   seList:
   - {fileID: 11400000, guid: 3b5527084de4700499b99878ea4b9fc6, type: 2}
+  - {fileID: 11400000, guid: 168bc65464b18a34695a508aba6cecf3, type: 2}
+  - {fileID: 11400000, guid: 54cc3b5f7d71e5f478ee79edc902f864, type: 2}
   bgmList:
   - {fileID: 11400000, guid: 9cdf24fefad27e64d98413c9c65418a4, type: 2}
 --- !u!4 &625291200
@@ -1066,7 +1071,7 @@ Transform:
   m_GameObject: {fileID: 625291198}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 213.82234, y: 307.51205, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2125,6 +2130,7 @@ MonoBehaviour:
   hoverColor: {r: 0, g: 0, b: 0, a: 1}
   lerpSpeed: 0.2
   targetSize: 1.2
+  audioManager: {fileID: 1029830799}
 --- !u!1 &1167385248
 GameObject:
   m_ObjectHideFlags: 0
@@ -2258,6 +2264,7 @@ MonoBehaviour:
   hoverColor: {r: 0, g: 0, b: 0, a: 1}
   lerpSpeed: 0.2
   targetSize: 1.2
+  audioManager: {fileID: 1029830799}
 --- !u!114 &1189966320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8382,6 +8389,7 @@ MonoBehaviour:
   hoverColor: {r: 0, g: 0, b: 0, a: 1}
   lerpSpeed: 0.2
   targetSize: 1.2
+  audioManager: {fileID: 1029830799}
 --- !u!114 &2142080462
 MonoBehaviour:
   m_ObjectHideFlags: 0

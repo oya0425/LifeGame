@@ -10,6 +10,9 @@ public class EventTextManager : TextBoxBase
     [Tooltip("クリック通知用")]
     public Action OnClicked;
 
+    // --- 音 ---
+    [SerializeField] private AudioManager audioManager;
+
     public void Show()
     {
         window.SetActive(true);
@@ -29,6 +32,7 @@ public class EventTextManager : TextBoxBase
     // UI の Button / EventTrigger から呼ぶ
     public void Click()
     {
+        audioManager.PlaySE("MouseClickSE");
         OnClicked?.Invoke();
     }
 }
