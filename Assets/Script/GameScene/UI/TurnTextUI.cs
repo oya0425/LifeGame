@@ -10,7 +10,14 @@ public class TurnTextUI : MonoBehaviour
     public void UpdateTurnText(int currentTurn,int allTurn)
     {
         nowTurnText.gameObject.SetActive(true);
-        nowTurnText.text = $"TURN:{currentTurn}/{allTurn}";
+        if(currentTurn==allTurn)
+        {
+            nowTurnText.text = $"<color=red>ラストターン</color>：{currentTurn}/{allTurn}";
+        }
+        else
+        {
+            nowTurnText.text = $"ターン：{currentTurn}/{allTurn}";
+        }
     }
 
 }

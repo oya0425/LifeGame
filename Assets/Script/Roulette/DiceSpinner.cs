@@ -53,6 +53,8 @@ public class DiceSpinner : MonoBehaviour
     // --- Startの少し上で変数を追加 ---
     private Outline[] numberOutlines;
 
+    // --- 音 ---
+    [SerializeField] AudioManager audioManager;
 
     private void Awake()
     {
@@ -89,6 +91,7 @@ public class DiceSpinner : MonoBehaviour
         if (isSpinning) return;                                 // すでに回転中
         if (PlayerMover.instance.GetIsMove()) return;           // プレイヤー移動中は回せない
         //if (!MoveCamera.instance.GetIsInitPosition()) return;   // カメラ位置が戻っていない
+        if (audioManager != null) audioManager.PlaySE("DecisionSE");
 
         isSpinning = true;
         OnSpinStart?.Invoke();
@@ -134,7 +137,7 @@ public class DiceSpinner : MonoBehaviour
             {
                 // ここで音を鳴らす
                 // if(tickAudio) tickAudio.PlayOneShot(tickAudio.clip);
-
+                if (audioManager != null) audioManager.PlaySE("RouletteQSE");
                 // 針を少しだけ振動させる（しなり表現）
                 // needle.localScale = new Vector3(1.1f, 0.9f, 1f); // ほんの一瞬太らせるなど
 
@@ -160,6 +163,7 @@ public class DiceSpinner : MonoBehaviour
 
         // 3. 最終位置にピタッと止まる
         yield return RotateToAngle(finalAngle, 0.1f);
+
         
         // ---- 出目計算 ----
         result = CalculateResult();
@@ -191,11 +195,14 @@ public class DiceSpinner : MonoBehaviour
                 if (numberOutlines[i] != null) numberOutlines[i].enabled = false;
             }
         }
+        if (audioManager != null) audioManager.PlaySE("RouletteDecisionSE");
+
         yield return new WaitForSeconds(0.2f); // 少し待つ
 
         // 2. 少し縮ませる (ギュッ)
         numberObjects[winIndex].localScale = Vector3.one * 1.4f;
         yield return new WaitForSeconds(0.2f);
+        if (audioManager != null) audioManager.PlaySE("RouletteDecisionSE");
 
         // 3. もう一度だけ少し膨らんでから落ち着く (ポヨン)
         numberObjects[winIndex].localScale = Vector3.one * 1.6f;

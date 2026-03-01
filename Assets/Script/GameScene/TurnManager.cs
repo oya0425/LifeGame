@@ -34,6 +34,10 @@ public class TurnManager : MonoBehaviour
 
     public TurnTextUI turnTextUI;
 
+    // --- 音 ---
+    [SerializeField] private AudioManager audioManager;
+
+
     void Awake()
     {
         instance = this;
@@ -64,7 +68,7 @@ public class TurnManager : MonoBehaviour
     /// <summary>
     /// 現在のプレイヤーのターンを終了し、次のプレイヤーへ進める。
     /// </summary>
-    public void EndTurn()
+     public IEnumerator EndTurn()
     {
         players[currentPlayerIndex].isMyTurn = false;
 
@@ -77,8 +81,14 @@ public class TurnManager : MonoBehaviour
             if (currentTurn > allTurn)
             {
                 bOnfinish = true;
+
+                // ゲーム終了時の特別なSEを鳴らし、その長さ分待つ
+                float duration = audioManager.PlaySpecialSE("GameEndSE", 1.3f);
+                yield return new WaitForSeconds(duration);
+
                 OnGameEnd();
-                return;
+
+                yield break;
             }
 
             currentPlayerIndex = 0;
@@ -95,6 +105,10 @@ public class TurnManager : MonoBehaviour
     {
         if (currentTurn > allTurn)
         {
+            // ゲーム終了時の特別なSEを鳴らし、その長さ分待つ
+            float duration = audioManager.PlaySpecialSE("GameEndSE", 1.2f);
+            yield return new WaitForSeconds(duration);
+
             OnGameEnd();
             yield break;
         }
@@ -105,7 +119,7 @@ public class TurnManager : MonoBehaviour
     private void OnGameEnd()
     {
         Debug.Log("ゲーム終了");
-
+        Debug.Log($"{bOnfinish} onFinish");
         // リザルト表示、入力停止などをここに書く
         OnGameFinish?.Invoke();
 

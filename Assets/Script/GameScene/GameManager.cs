@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public enum eActionType { Roulette, Item, Map }
+public enum eActionType {None, Roulette, Item, Map }
 
 /// <summary>
 /// ゲーム全体を管理するメインクラス
@@ -156,6 +156,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]MapEventEffect mapEventEffect;
 
 
+    // --- ゲーム終了時 ---
+    [SerializeField]GameEndUI gameEndUI;
+
 
     // --- リザルト処理の変数 ---
     [SerializeField] ResultManager resultManager;
@@ -278,7 +281,7 @@ public class GameManager : MonoBehaviour
                 audioManager.PlayBGM("PlayGameBGM");
                 selectActionViewUI.SetItemButtonInteractable(isItem);
                 ShowSelectActionView();
-                ShowBackButton();
+                //ShowBackButton();
                 HideDiceView();
                 break;
             case MODE.Dice:
@@ -729,11 +732,12 @@ public class GameManager : MonoBehaviour
             case eActionType.Roulette:
                 ChangeMode(MODE.Dice);
                 DiceSpinner.instance.ResetNeedle();
+                ShowBackButton();
                 ShowBackButtonUI();
                 break;
             case eActionType.Item:
                 ChangeMode(MODE.Item);
-
+                ShowBackButton();
                 ShowBackButtonUI();
 
                 break;
@@ -745,6 +749,7 @@ public class GameManager : MonoBehaviour
     ///</sammary>>
     public void OnBackButton(eActionType action)
     {
+        HideBackButton();
         switch (action)
         {
             case eActionType.Roulette:
@@ -959,8 +964,9 @@ public class GameManager : MonoBehaviour
                 tile.DebugLog();
                 break;
             case TileData.eTileType.EVENT:
-                audioManager.StopBGM();
+                audioManager.PlaySE("EventMasuSE");
 
+                audioManager.StopBGM();
                 audioManager.PlayBGM("EventBGM");
 
                 //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));
@@ -979,9 +985,10 @@ public class GameManager : MonoBehaviour
 
                 break;
             case TileData.eTileType.LUCKY:
+                audioManager.PlaySE("LuckyMasuSE");
                 audioManager.StopBGM();
                 audioManager.PlayBGM("LuckyBGM");
-
+                
 
                 //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));
                 yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile, () => {
@@ -993,6 +1000,7 @@ public class GameManager : MonoBehaviour
 
                 break;
             case TileData.eTileType.MINUS:
+
                 int baseDeltaMinus = calculator.CalcMoneyDelta(tile);
                 int finalDeltaMinau = baseDeltaMinus;
 
@@ -1070,11 +1078,15 @@ public class GameManager : MonoBehaviour
             {
                 eventTextManager.SetMessageText(
                     $"{deltaText}もらった!\n"/*+ "<align=right>クリックで次へ</align>"*/);
+                audioManager.PlaySE("MoneyPlusSE");
+
             }
             else
             {
                 eventTextManager.SetMessageText(
                     $"{deltaText}失った...\n"/*+ "<align=right>クリックで次へ</align>"*/);
+                audioManager.PlaySE("MinusMasuSE");
+
             }
 
         }
@@ -1165,8 +1177,17 @@ public class GameManager : MonoBehaviour
         }
         yield return new WaitForSeconds(1.0f);
 
-        turnM.EndTurn();
-        if(TurnManager.instance.bOnfinish) yield break;
+        // --- ターンを進める ---
+
+        StartCoroutine(turnM.EndTurn());
+        playerStatusUI.Hide();
+        if (TurnManager.instance.bOnfinish)
+        {
+            gameEndUI.Show();
+            yield break;
+
+        }
+
         isItem = true;
 
         playerData = TurnManager.instance.GetCurrentPlayerData();
@@ -1202,6 +1223,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator OnResultStart()
     {
+        gameEndUI.Hide();
 
         // ① 画面を黒で覆う
         yield return ScreenTransition.instance.PlayerExpandShrink();
@@ -1225,7 +1247,8 @@ public class GameManager : MonoBehaviour
 
 
         yield return ScreenTransition.instance.PlayShrink();
-
+        audioManager.StopBGM();
+        audioManager.PlayBGM("RankingBGM");
         //// お金の量で降順ソート
         //players.Sort((a, b) => b.money.CompareTo(a.money));
 
@@ -1248,6 +1271,9 @@ public class GameManager : MonoBehaviour
         detailButton.gameObject.SetActive(false);
 
         resultUI.Hide();
+        audioManager.StopBGM();
+        audioManager.PlayBGM("DetailViewBGM");
+        audioManager.PlaySE("DecisionSE");
 
         // 詳細表示へ
         resultDetailManager.Show(
@@ -1262,6 +1288,8 @@ public class GameManager : MonoBehaviour
         // リザルト系UIを全部閉じる
         //resultDetailManager.Hide();
         //resultUI.Hide();
+        audioManager.PlaySE("DecisionSE");
+        //audioManager.StopBGM();
 
         // タイトルへ
         SceneManager.LoadScene("TitleScene");

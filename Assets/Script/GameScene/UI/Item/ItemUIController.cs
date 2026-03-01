@@ -32,6 +32,7 @@ public class ItemUIController : MonoBehaviour
     string[] currentDescriptions;//à–¾•¶‚ðã‘‚«‚Å‚Í‚È‚­AÅ‰‚É“o˜^‚µ‚½‚à‚Ì‚ð‘I‘ð‚µ‚Ä•\Ž¦‚·‚é
     bool isHovering;
 
+    [SerializeField] AudioManager audioManager;
 
     private void Awake()
     {
@@ -46,8 +47,10 @@ public class ItemUIController : MonoBehaviour
             int index = i;
 
             itemButtons[i].onClick.AddListener(() =>
-                OnChoiceSelected?.Invoke(index)
-            );
+            {
+                audioManager.PlaySE("DecisionSE");
+                OnChoiceSelected?.Invoke(index);
+            });
         }
     }
 

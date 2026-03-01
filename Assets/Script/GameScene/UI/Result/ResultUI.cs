@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class ResultUI : MonoBehaviour
 {
@@ -28,6 +29,9 @@ public class ResultUI : MonoBehaviour
     List<RectTransform> rankingItemRects = new List<RectTransform>();
 
     public System.Action OnRankingAnimationFinished;
+
+    // --- ‰¹ --- 
+    [SerializeField]AudioManager audioManager;
 
     public void Hide()
     {
@@ -85,9 +89,13 @@ public class ResultUI : MonoBehaviour
         {
             RectTransform item = rankingItemRects[i];
             RectTransform targetPos = rankTargetPosList[i];
-
-            yield return StartCoroutine(
-                MoveToPosition(item, targetPos.anchoredPosition, 1.4f)
+            float currentPitch = 1.0f + (i * 0.2f);
+            if (i == rankingItemRects.Count - 1)
+            {
+                currentPitch = 1.8f;
+            }
+                yield return StartCoroutine(
+                MoveToPosition(item, targetPos.anchoredPosition, 1.4f, currentPitch)
                 );
             yield return new WaitForSeconds(1.0f);
         }
@@ -99,11 +107,12 @@ public class ResultUI : MonoBehaviour
     IEnumerator MoveToPosition(
         RectTransform item,
         Vector2 targetPos,
-        float duration)
+        float duration,
+        float pitch)
     {
         Vector2 startPos = item.anchoredPosition;
         float time = 0f;
-
+        audioManager.PlaySERanking("RankingSE",pitch);
         while (time < duration)
         {
             time += Time.deltaTime*2;
