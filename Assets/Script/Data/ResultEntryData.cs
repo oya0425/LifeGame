@@ -11,11 +11,13 @@ public class ResultEntryData
     [Tooltip("‡ˆÊ")]
     public int rank;
 
-    public ResultEntryData(string playerName, int money, int targetMoney, int rank)
+    public Color playerColor;
+    public ResultEntryData(string playerName, int money, int targetMoney, int rank,Color playerColor)
     {
         this.playerName = playerName;
         this.money = money;
         this.targetMoney = targetMoney;
         this.rank = rank;
+        this.playerColor = playerColor;
     }
 }

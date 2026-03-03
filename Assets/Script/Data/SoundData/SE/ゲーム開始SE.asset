@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: StartSE
   clip: {fileID: 8300000, guid: 96d19284eb6d24549b246834f018b0aa, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 0

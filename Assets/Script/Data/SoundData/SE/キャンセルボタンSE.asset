@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: CancelSE
   clip: {fileID: 8300000, guid: 58da22e0f6e51814f824bb44afc16c56, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 1

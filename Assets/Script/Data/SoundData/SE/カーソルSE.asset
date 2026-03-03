@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: CursorSE
   clip: {fileID: 8300000, guid: 8473b1dfceedb3b4d903ab9a44c8eb34, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 0

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMoving: 0
-  moveSpeed: 3
+  moveTime: 0.5
   tileParent: {fileID: 0}
   tiles:
   - {fileID: 0}
@@ -63,6 +63,8 @@ MonoBehaviour:
   spinner: {fileID: 0}
   isMyTurn: 0
   myIndex: -1
+  isReachedGoal: 0
+  audioManager: {fileID: 0}
 --- !u!54 &8614417066330204286
 Rigidbody:
   m_ObjectHideFlags: 0

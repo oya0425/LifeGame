@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f3a77f2cd21f34fabb8440ddf70c76, type: 3}
+  m_Name: "\u30BB\u30FC\u30EB\u306E\u8A98\u60D1"
+  m_EditorClassIdentifier: Assembly-CSharp::EventData
+  eventName: "\u30BB\u30FC\u30EB\u306E\u8A98\u60D1"
+  texts:
+  - "\u6B32\u3057\u304B\u3063\u305F\u7269\u304C\u30BB\u30FC\u30EB\u4E2D\u3060\u3002"
+  - "\u4ECA\u3057\u304B\u306A\u3044\u6C17\u304C\u3059\u308B\u3002"
+  choiceAText: "\u8CB7\u3046"
+  choiceBText: "\u6211\u6162\u3059\u308B"
+  resultAText: "\u6E80\u8DB3\u3057\u305F\u304C\u3001\u8CA1\u5E03\u306F\u8EFD\u304F\u306A\u3063\u305F\u3002"
+  resultBText: "\u8CB7\u308F\u305A\u306B\u6E08\u3093\u3060\u3002\u5C11\u3057\u5F8C\u6094\u3082\u3042\u308B\u3002"
+  choiceAMinMoney: -4000
+  choiceAMaxMoney: -3000
+  choiceBMinMoney: -100
+  choiceBMaxMoney: 0
+  backGround: {fileID: 21300000, guid: 3306c5972b077e74d87b33ed511c015a, type: 3}
+  mainImg: {fileID: 21300000, guid: eda5492b9165dd24f9911c929476d976, type: 3}
+  resultAImage: {fileID: 21300000, guid: c8d3fc4f83318f449b258405dc739adc, type: 3}
+  resultBImage: {fileID: 21300000, guid: 7abedccb26fa7c24fac9683b4e1bdf92, type: 3}

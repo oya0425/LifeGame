@@ -35,7 +35,8 @@ public class ResultManager : MonoBehaviour
                 playerData.playerName,
                 playerData.money,
                 playerData.targetMoney,
-                0
+                0,
+                playerData.playerColor
                 );
             resultEntryDatas.Add(entry);
         }

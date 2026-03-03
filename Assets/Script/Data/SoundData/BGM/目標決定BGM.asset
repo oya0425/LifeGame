@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: ReadyBGM
   clip: {fileID: 8300000, guid: af17eddc29925c14f8e930f35e69bdb8, type: 3}
-  volume: 0.3
+  volume: 0.08
   loop: 1

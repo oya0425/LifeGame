@@ -7,7 +7,7 @@ public class RankingItemUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] TextMeshProUGUI moneyText;
 
-    public void Setup(int rank, string name, int money)
+    public void Setup(int rank, string name, int money,Color playerColor)
     {
         if (rankText != null)
         {
@@ -16,6 +16,7 @@ public class RankingItemUI : MonoBehaviour
         if (nameText != null)
         {
             nameText.text = name.ToString();
+            nameText.color = playerColor;
         }
         if(moneyText != null)
         {

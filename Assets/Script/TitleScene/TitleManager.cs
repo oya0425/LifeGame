@@ -57,7 +57,7 @@ public class TitleManager : MonoBehaviour
     public static int allTurn;
     [SerializeField] TextMeshProUGUI allTurnText;
 
-    private const int MIN_TURN = 1;
+    private const int MIN_TURN = 5;
     private const int MAX_TURN = 30;
     private const int TURN_STEP = 5;
 
@@ -216,6 +216,7 @@ public class TitleManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         SceneManager.LoadScene("GameScene");
+        //SceneManager.LoadScene("GameScene 1");
         audioManager.StopBGM();
 
     }

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: GameEndSE
   clip: {fileID: 8300000, guid: 092f226a1acef1a4b8ab42b80d3ed766, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 1

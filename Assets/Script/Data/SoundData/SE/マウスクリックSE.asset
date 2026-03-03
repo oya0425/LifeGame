@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: MouseClickSE
   clip: {fileID: 8300000, guid: 11fbe5520d66a4547bbab501914087be, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 0

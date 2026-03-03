@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using static UnityEngine.SpriteMask;
 
 public class AudioManager : MonoBehaviour
 {
     public AudioSource seSource;
     public AudioSource bgmSource;
+    public AudioSource eventSource;
     public SoundDatabase db; // ここにDatabaseアセットをセット
 
     void Awake() { 
@@ -20,6 +22,31 @@ public class AudioManager : MonoBehaviour
             seSource.PlayOneShot(data.clip, data.volume);
         }
     }
+    // 通常のBGMを止めて、イベント用の音を流す
+    public void StartEventBGM(string name)
+    {
+        bgmSource.Pause(); // 今の場所でキープ！
+        Sounddata data = db.GetBGM(name);
+        if (data != null && data.clip != null)
+        {
+            // 既に同じ曲が流れている場合は何もしない
+            if (eventSource.clip == data.clip && eventSource.isPlaying) return;
+
+            eventSource.clip = data.clip;
+            eventSource.volume = data.volume;
+            eventSource.loop = data.loop;
+            eventSource.Play();
+        }
+
+    }
+
+    // イベントが終わったので、元のBGMを再開する
+    public void EndEventBGM()
+    {
+        eventSource.Stop();   // イベント音を止める
+        bgmSource.UnPause(); // 続きから再生！
+    }
+
 
     //public void PlaySpecialSE(string name, float pitch)
     //{
@@ -98,13 +125,25 @@ public class AudioManager : MonoBehaviour
         Sounddata data = db.GetBGM(name);
         if (data != null && data.clip != null)
         {
-            // 既に同じ曲が流れている場合は何もしない
-            if (bgmSource.clip == data.clip && bgmSource.isPlaying) return;
+            // 1. 既に同じ曲がセットされている場合
+            if (bgmSource.clip == data.clip)
+            {
+                // 再生中なら何もしない（継続させる）
+                if (bgmSource.isPlaying) return;
 
+                // 止まっている（Pause中）なら、続きから再開（UnPause）
+                bgmSource.UnPause();
+
+                // もし何らかの理由で完全に止まっていた（UnPauseで動かない）時の保険
+                if (!bgmSource.isPlaying) bgmSource.Play();
+                return;
+            }
+
+            // 2. 別の曲、または初めて曲を流す場合
             bgmSource.clip = data.clip;
             bgmSource.volume = data.volume;
             bgmSource.loop = data.loop;
-            bgmSource.Play();
+            bgmSource.Play(); // 0秒から再生
         }
     }
 

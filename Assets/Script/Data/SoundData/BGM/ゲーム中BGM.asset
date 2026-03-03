@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: PlayGameBGM
   clip: {fileID: 8300000, guid: c504736b2b1cc204fba5814122120a43, type: 3}
-  volume: 0.3
+  volume: 0.08
   loop: 1

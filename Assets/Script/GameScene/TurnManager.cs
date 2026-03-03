@@ -28,7 +28,7 @@ public class TurnManager : MonoBehaviour
     [Tooltip("全体のターン数")]
     public int allTurn = 30;
     [Tooltip("現在のターン数")]
-    public int currentTurn = 1;
+    public int currentTurn = 5;
 
     public bool bOnfinish;
 
@@ -115,6 +115,16 @@ public class TurnManager : MonoBehaviour
         yield return null;
         StartTurn();
     }
+
+    public int GetCurrentTurn()
+    {
+        return currentTurn;
+    }
+    public int GetAllTurn()
+    {
+        return allTurn;
+    }
+
 
     private void OnGameEnd()
     {

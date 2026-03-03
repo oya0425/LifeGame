@@ -86,7 +86,7 @@ public class LuckyUIController : TextBoxBase
     /// </summary>
     public void SetItemDiscriptionText(string discription)
     {
-        itemDiscriptionText.text = $"説明\n{discription}";
+        itemDiscriptionText.text = $"{discription}";
     }
     /// <summary>
     /// 何のアイテムを獲得したかのset　

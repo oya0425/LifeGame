@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class ResultUI : MonoBehaviour
 {
@@ -64,7 +63,7 @@ public class ResultUI : MonoBehaviour
             itemRect.anchoredPosition = StartPos.anchoredPosition;
 
             RankingItemUI rankingItemUI = item.GetComponent<RankingItemUI>();
-            rankingItemUI.Setup(entry.rank, entry.playerName, entry.money);
+            rankingItemUI.Setup(entry.rank, entry.playerName, entry.money,entry.playerColor);
 
             //ˆÊ’u‚ð•Û‘¶
             rankingItemRects.Add(itemRect);

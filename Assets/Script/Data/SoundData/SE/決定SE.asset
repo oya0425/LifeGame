@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: DecisionSE
   clip: {fileID: 8300000, guid: caf34241cd4a02c4bbc3e6dd32e1da0f, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 0

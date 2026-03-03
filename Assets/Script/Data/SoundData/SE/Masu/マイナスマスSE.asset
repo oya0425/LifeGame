@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: MinusMasuSE
   clip: {fileID: 8300000, guid: 2c890793cdf4ee94e82d3941f537f101, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 1

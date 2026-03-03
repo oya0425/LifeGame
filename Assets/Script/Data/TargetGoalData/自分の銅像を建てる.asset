@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eba3da6fb098d342bbf5108615af4c2, type: 3}
+  m_Name: "\u81EA\u5206\u306E\u9285\u50CF\u3092\u5EFA\u3066\u308B"
+  m_EditorClassIdentifier: Assembly-CSharp::TargetGoalData
+  title: "\u81EA\u5206\u306E\u9285\u50CF\u3092\u5EFA\u3066\u308B"
+  description: "\u8857\u306E\u5E83\u5834\u306B\u3001\u7B49\u8EAB\u5927\u306E\u7D14\u91D1\u88FD\u30DE\u30A4\u30FB\u30E2\u30CB\u30E5\u30E1\u30F3\u30C8\u3092\u7F6E\u304F\u3002"
+  minMoney: 1500
+  maxMoney: 120000

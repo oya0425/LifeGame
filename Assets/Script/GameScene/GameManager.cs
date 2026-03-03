@@ -277,7 +277,8 @@ public class GameManager : MonoBehaviour
 
                 break;
             case MODE.SelectAction:
-                audioManager.StopBGM();
+                //audioManager.StopBGM();
+                audioManager.EndEventBGM();
                 audioManager.PlayBGM("PlayGameBGM");
                 selectActionViewUI.SetItemButtonInteractable(isItem);
                 ShowSelectActionView();
@@ -965,9 +966,9 @@ public class GameManager : MonoBehaviour
                 break;
             case TileData.eTileType.EVENT:
                 audioManager.PlaySE("EventMasuSE");
-
-                audioManager.StopBGM();
-                audioManager.PlayBGM("EventBGM");
+                audioManager.StartEventBGM("EventBGM");
+                //audioManager.StopBGM();
+                //audioManager.PlayBGM("EventBGM");
 
                 //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));
                 //mapEventEffect.Hide();
@@ -986,8 +987,9 @@ public class GameManager : MonoBehaviour
                 break;
             case TileData.eTileType.LUCKY:
                 audioManager.PlaySE("LuckyMasuSE");
-                audioManager.StopBGM();
-                audioManager.PlayBGM("LuckyBGM");
+                audioManager.StartEventBGM("LuckyBGM");
+                //audioManager.StopBGM();
+                //audioManager.PlayBGM("LuckyBGM");
                 
 
                 //yield return StartCoroutine(mapEventEffect.PlayCutinRoutine(tile));

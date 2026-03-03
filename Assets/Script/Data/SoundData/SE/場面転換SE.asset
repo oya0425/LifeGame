@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: SceneChangeSE
   clip: {fileID: 8300000, guid: 86d91f8de40440940b3db9f608605f75, type: 3}
-  volume: 1
+  volume: 0.4
   loop: 0

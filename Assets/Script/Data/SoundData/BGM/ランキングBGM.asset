@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Sounddata
   soundName: RankingBGM
   clip: {fileID: 8300000, guid: 90a0402a8ee3a074997931e578d8ca24, type: 3}
-  volume: 0.3
+  volume: 0.08
   loop: 1
