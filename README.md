@@ -5,6 +5,9 @@ Unity (Unity 6) で制作した、戦略的ボードゲームシステムです�
 従来の「お金を稼ぐだけ」の人生ゲームとは異なり、あらかじめ決めた目標金額に「ぴったり」合わせることを目指す、戦略性の高いボードゲームです。
 目標を超えるだけでなく、いかに調整して着地させるかという、リソース管理の駆け引きを楽しめます。
 
+<img width="1708" height="958" alt="image" src="https://github.com/user-attachments/assets/f9607cbf-8282-44c0-bc57-b1e491fb819b" />
+<img width="1703" height="957" alt="image" src="https://github.com/user-attachments/assets/5685ab6f-40d4-4d2c-a1d2-fa8ef99f4cc3" />
+
 📋 基本情報
 コンセプト: 目標金額ちょうどを目指す、逆算型人生ゲーム
 
